@@ -10,7 +10,7 @@ A robust, fast, and fully-featured HTML5 parser and query engine for PHP. Parse,
 - **Whitespace normalization**: Optionally normalizes whitespace in text nodes.
 - **Namespaces**: Supports XML/HTML namespaces (e.g., `svg:rect`).
 - **Attribute handling**: Handles quoted/unquoted and boolean attributes.
-- **Query engine**: Powerful CSS-like selectors for finding nodes (`HtmlQuery`).
+- **Query engine**: Powerful CSS-like selectors for finding nodes (call `querySelectorAll`, `querySelector`, or `getElementsByTagName` directly on any `HtmlNode`).
 - **Node manipulation**: Add, remove, set attributes, change text, and more (`HtmlNode`).
 - **Performance**: Optimized for large and deeply nested documents.
 - **Comprehensive tests**: Includes extensive tests for all features and edge cases.
@@ -44,15 +44,25 @@ foreach ($root->children as $child) {
 }
 ```
 
-### Querying with CSS Selectors
+### Querying with CSS Selectors (DOM-like)
 
 ```php
-use Daniesy\DOMinator\HtmlQuery;
-
-$query = new HtmlQuery($root);
-$nodes = $query->querySelectorAll('.foo'); // Find all elements with class="foo"
+// Find all elements with class="foo"
+$nodes = $root->querySelectorAll('.foo');
 foreach ($nodes as $node) {
     echo $node->getInnerText();
+}
+
+// Find the first <span> element
+$span = $root->querySelector('span');
+if ($span) {
+    echo $span->getInnerText();
+}
+
+// Find all <div> elements (case-insensitive)
+$divs = $root->getElementsByTagName('div');
+foreach ($divs as $div) {
+    echo $div->getInnerText();
 }
 ```
 
@@ -110,12 +120,9 @@ echo $svg->tag;       // 'rect'
   - `removeAttribute($name)`: Remove attribute
   - `remove()`: Remove node from parent
   - `toHtml()`: Export node and children as HTML
-
-### `HtmlQuery`
-
-- `new HtmlQuery(HtmlNode $root)`
-- `querySelectorAll($selector)`: Returns array of matching nodes
-  - Supports tag, class, id, attribute, boolean attribute selectors, and nesting
+  - `querySelectorAll($selector)`: Returns array of matching nodes (CSS selector)
+  - `querySelector($selector)`: Returns the first matching node or null
+  - `getElementsByTagName($tag)`: Returns array of nodes with the given tag name (case-insensitive)
 
 ## Testing
 
