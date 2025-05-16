@@ -1,5 +1,5 @@
 <?php
-namespace Daniesy\HtmlParser;
+namespace Daniesy\DOMinator;
 
 // Represents a node in the HTML tree (element or text)
 class HtmlNode {

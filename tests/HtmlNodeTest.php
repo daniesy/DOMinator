@@ -1,6 +1,6 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use Daniesy\HtmlParser\HtmlNode;
+use Daniesy\DOMinator\HtmlNode;
 
 class HtmlNodeTest extends TestCase {
     public function testTextNode() {

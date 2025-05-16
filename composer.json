@@ -1,5 +1,5 @@
 {
-    "name": "daniesy/htmlparser",
+    "name": "daniesy/dominator",
     "description": "A simple HTML parser for PHP.",
     "type": "library",
     "keywords": [
@@ -7,7 +7,7 @@
         "parser",
         "php"
     ],
-    "homepage": "https://github.com/daniesy/htmlparser",
+    "homepage": "https://github.com/daniesy/dominator",
     "license": "MIT",
     "authors": [
         {
@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Daniesy\\HtmlParser\\": "src/"
+            "Daniesy\\DOMinator\\": "src/"
         }
     },
     "scripts": {

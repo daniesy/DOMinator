@@ -1,8 +1,8 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use Daniesy\HtmlParser\HtmlParser;
-use Daniesy\HtmlParser\HtmlQuery;
-use Daniesy\HtmlParser\HtmlNode;
+use Daniesy\DOMinator\HtmlParser;
+use Daniesy\DOMinator\HtmlQuery;
+use Daniesy\DOMinator\HtmlNode;
 
 class HtmlParserTest extends TestCase {
     public function testInvalidHtml() {

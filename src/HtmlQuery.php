@@ -1,5 +1,5 @@
 <?php
-namespace Daniesy\HtmlParser;
+namespace Daniesy\DOMinator;
 require_once __DIR__ . '/HtmlNode.php';
 
 // Query HtmlNode tree using CSS selectors

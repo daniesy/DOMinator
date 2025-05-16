@@ -1,4 +1,4 @@
-# HtmlParser PHP Library
+# DOMinator
 
 A robust, fast, and fully-featured HTML5 parser and query engine for PHP. Parse, traverse, manipulate, and query HTML documents with ease, supporting all modern HTML5 features, error recovery, namespaces, and more.
 
@@ -30,7 +30,7 @@ Or include the `src/` files directly in your project.
 ### Basic Parsing
 
 ```php
-use Daniesy\HtmlParser\HtmlParser;
+use Daniesy\DOMinator\HtmlParser;
 
 $html = '<div id="main"><p>Hello <b>World</b></p></div>';
 $root = HtmlParser::parse($html);
@@ -47,7 +47,7 @@ foreach ($root->children as $child) {
 ### Querying with CSS Selectors
 
 ```php
-use Daniesy\HtmlParser\HtmlQuery;
+use Daniesy\DOMinator\HtmlQuery;
 
 $query = new HtmlQuery($root);
 $nodes = $query->querySelectorAll('.foo'); // Find all elements with class="foo"

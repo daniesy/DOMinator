@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use Daniesy\HtmlParser\HtmlParser;
-use Daniesy\HtmlParser\HtmlQuery;
+use Daniesy\DOMinator\HtmlParser;
+use Daniesy\DOMinator\HtmlQuery;
 
 class HtmlQueryTest extends TestCase {
     public function testQuerySelectorAllTag() {
