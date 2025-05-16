@@ -40,7 +40,8 @@ class HtmlQuery {
             return isset($node->attributes['id']) && $node->attributes['id'] === $m[1];
         }
         // [attr=value]
-        if (preg_match('/^\[([a-zA-Z0-9\-:]+)=([a-zA-Z0-9\-_]+)\]/', $selector, $m)) {
+        if (preg_match('/^\[([a-zA-Z0-9\-:]+)=([a-zA-Z0-9\-_]*)\]/', $selector, $m)) {
+            // Match if attribute exists and value matches (including empty string for boolean attributes)
             return isset($node->attributes[$m[1]]) && $node->attributes[$m[1]] === $m[2];
         }
         return false;
