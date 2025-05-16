@@ -3,26 +3,19 @@ namespace Daniesy\DOMinator;
 
 // Represents a node in the HTML tree (element or text)
 class HtmlNode {
-    public $tag;
-    public $attributes = [];
-    public $children = [];
-    public $parent = null;
-    public $innerText = '';
-    public $isText = false;
-    public $doctype = '';
-    public $isComment = false;
-    public $isCdata = false;
-    public $namespace = '';
+    public array $children = [];
+    public ?HtmlNode $parent = null;
+    public string $doctype = '';
 
-    public function __construct($tag = '', $attributes = [], $isText = false, $innerText = '', $isComment = false, $isCdata = false, $namespace = '') {
-        $this->tag = $tag;
-        $this->attributes = $attributes;
-        $this->isText = $isText;
-        $this->innerText = $innerText;
-        $this->isComment = $isComment;
-        $this->isCdata = $isCdata;
-        $this->namespace = $namespace;
-    }
+    public function __construct(
+        public string $tag = '',
+        public array $attributes = [],
+        public bool $isText = false,
+        public string $innerText = '',
+        public bool $isComment = false,
+        public bool $isCdata = false,
+        public string $namespace = ''
+    ) {}
 
     public function appendChild($child) {
         $child->parent = $this;

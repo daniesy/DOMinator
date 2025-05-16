@@ -5,18 +5,15 @@ require_once __DIR__ . '/HtmlNode.php';
 // Query HtmlNode tree using CSS selectors
 
 class HtmlQuery {
-    private $root;
-    public function __construct($root) {
-        $this->root = $root;
-    }
+    public function __construct(private HtmlNode $root) {}
 
-    public function querySelectorAll($selector) {
+    public function querySelectorAll(string $selector): array {
         $results = [];
         $this->traverse($this->root, $selector, $results);
         return $results;
     }
 
-    private function traverse($node, $selector, &$results) {
+    private function traverse(HtmlNode $node, string $selector, array &$results): void {
         if ($this->matches($node, $selector)) {
             $results[] = $node;
         }
@@ -25,7 +22,7 @@ class HtmlQuery {
         }
     }
 
-    private function matches($node, $selector) {
+    private function matches(HtmlNode $node, string $selector): bool {
         if ($node->isText) return false;
         // tag
         if (preg_match('/^[a-zA-Z0-9\-]+$/', $selector)) {

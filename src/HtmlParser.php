@@ -3,11 +3,14 @@ namespace Daniesy\DOMinator;
 require_once __DIR__ . '/HtmlNode.php';
 
 class HtmlParser {
-    private static $voidElements = [
+    private static array $voidElements = [
         'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr',
     ];
 
-    public static function parse($html, $normalizeWhitespace = false) {
+    // No instance properties to promote; all methods are static.
+    // No changes needed for constructor property promotion.
+
+    public static function parse(string $html, bool $normalizeWhitespace = false): HtmlNode {
         $html = trim($html);
         $doctype = '';
         if (preg_match('/^<!DOCTYPE[^>]*>/i', $html, $m)) {
@@ -105,7 +108,7 @@ class HtmlParser {
         return $root;
     }
 
-    private static function parseSingleNode($html) {
+    private static function parseSingleNode(string $html): HtmlNode {
         $html = trim($html);
         if (preg_match('/^<([a-zA-Z0-9\-]+)([^>]*)>([\s\S]*)<\/\1>$/', $html, $m)) {
             $tag = $m[1];
@@ -122,7 +125,7 @@ class HtmlParser {
         return new HtmlNode('root');
     }
 
-    private static function parseAttributes($str) {
+    private static function parseAttributes(string $str): array {
         $attrs = [];
         // Match key="value", key='value', key=value, or key (boolean attribute)
         if (preg_match_all('/([a-zA-Z0-9\-:]+)(?:\s*=\s*("[^"]*"|\'[^"]*\'|[^\s>]+))?/', $str, $m, PREG_SET_ORDER)) {
