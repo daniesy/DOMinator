@@ -41,8 +41,7 @@ class HtmlParserTest extends TestCase {
     public function testQuerySelectorAllByClass() {
         $html = '<div><span class="foo">A</span><span class="bar">B</span></div>';
         $root = HtmlParser::parse($html);
-        $query = new HtmlQuery($root);
-        $nodes = $query->querySelectorAll('.foo');
+        $nodes = $root->querySelectorAll('.foo');
         $this->assertCount(1, $nodes);
         $this->assertEquals('span', $nodes[0]->tag);
         $this->assertEquals('A', $nodes[0]->getInnerText());
@@ -51,8 +50,7 @@ class HtmlParserTest extends TestCase {
     public function testSetInnerText() {
         $html = '<div><span class="foo">A</span></div>';
         $root = HtmlParser::parse($html);
-        $query = new HtmlQuery($root);
-        $nodes = $query->querySelectorAll('.foo');
+        $nodes = $root->querySelectorAll('.foo');
         $nodes[0]->setInnerText('B');
         $this->assertEquals('B', $nodes[0]->getInnerText());
     }
@@ -60,8 +58,7 @@ class HtmlParserTest extends TestCase {
     public function testSetAndRemoveAttribute() {
         $html = '<div><span class="foo">A</span></div>';
         $root = HtmlParser::parse($html);
-        $query = new HtmlQuery($root);
-        $nodes = $query->querySelectorAll('span');
+        $nodes = $root->querySelectorAll('span');
         $nodes[0]->setAttribute('id', 'test');
         $this->assertEquals('test', $nodes[0]->attributes['id']);
         $nodes[0]->removeAttribute('id');
@@ -71,10 +68,9 @@ class HtmlParserTest extends TestCase {
     public function testRemoveNode() {
         $html = '<div><span class="foo">A</span><span>B</span></div>';
         $root = HtmlParser::parse($html);
-        $query = new HtmlQuery($root);
-        $nodes = $query->querySelectorAll('.foo');
+        $nodes = $root->querySelectorAll('.foo');
         $nodes[0]->remove();
-        $spans = $query->querySelectorAll('span');
+        $spans = $root->querySelectorAll('span');
         $this->assertCount(1, $spans);
         $this->assertEquals('B', $spans[0]->getInnerText());
     }
