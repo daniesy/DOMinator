@@ -10,12 +10,18 @@ class HtmlNode {
     public $innerText = '';
     public $isText = false;
     public $doctype = '';
+    public $isComment = false;
+    public $isCdata = false;
+    public $namespace = '';
 
-    public function __construct($tag = '', $attributes = [], $isText = false, $innerText = '') {
+    public function __construct($tag = '', $attributes = [], $isText = false, $innerText = '', $isComment = false, $isCdata = false, $namespace = '') {
         $this->tag = $tag;
         $this->attributes = $attributes;
         $this->isText = $isText;
         $this->innerText = $innerText;
+        $this->isComment = $isComment;
+        $this->isCdata = $isCdata;
+        $this->namespace = $namespace;
     }
 
     public function appendChild($child) {
@@ -81,12 +87,18 @@ class HtmlNode {
         if ($this->tag === 'html' && isset($this->doctype)) {
             $html .= $this->doctype;
         }
+        if ($this->isComment) {
+            return '<!--' . $this->innerText . '-->';
+        }
+        if ($this->isCdata) {
+            return '<![CDATA[' . $this->innerText . ']]>';
+        }
         if ($this->isText) {
-            return htmlspecialchars($this->innerText);
+            return htmlspecialchars_decode(htmlspecialchars($this->innerText));
         }
         $attr = '';
         foreach ($this->attributes as $k => $v) {
-            $attr .= ' ' . $k . '="' . htmlspecialchars($v) . '"';
+            $attr .= ' ' . $k . '="' . htmlspecialchars_decode(htmlspecialchars($v)) . '"';
         }
         $html .= "<{$this->tag}{$attr}>";
         if ($this->children) {
