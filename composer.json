@@ -1,0 +1,12 @@
+{
+    "name": "daniesy/htmlparser",
+    "require-dev": {
+        "phpunit/phpunit": "^10"
+    },
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Daniesy\\HtmlParser\\": "src/"
+        }
+    }
+}
