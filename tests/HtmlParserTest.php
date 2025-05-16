@@ -247,4 +247,146 @@ class HtmlParserTest extends TestCase {
         $this->assertEquals('50', $svg->attributes['cy']);
         $this->assertEquals('40', $svg->attributes['r']);
     }
+
+    public function testNestedVoidElements() {
+        $html = '<div><img src="a.png"><br><hr><input type="text"></div>';
+        $root = HtmlParser::parse($html);
+        $div = $root->children[0];
+        $this->assertEquals('img', $div->children[0]->tag);
+        $this->assertEquals('br', $div->children[1]->tag);
+        $this->assertEquals('hr', $div->children[2]->tag);
+        $this->assertEquals('input', $div->children[3]->tag);
+        $this->assertEquals('a.png', $div->children[0]->attributes['src']);
+        $this->assertEquals('text', $div->children[3]->attributes['type']);
+    }
+
+    public function testMixedContent() {
+        $html = '<p>Hello <b>World</b>! <i>How</i> are <span>you</span>?</p>';
+        $root = HtmlParser::parse($html);
+        $p = $root->children[0];
+        $this->assertEquals('p', $p->tag);
+        $this->assertEquals('Hello ', $p->children[0]->innerText);
+        $this->assertEquals('b', $p->children[1]->tag);
+        $this->assertEquals('World', $p->children[1]->children[0]->innerText);
+        $this->assertEquals('! ', $p->children[2]->innerText);
+        $this->assertEquals('i', $p->children[3]->tag);
+        $this->assertEquals('How', $p->children[3]->children[0]->innerText);
+        $this->assertEquals(' are ', $p->children[4]->innerText);
+        $this->assertEquals('span', $p->children[5]->tag);
+        $this->assertEquals('you', $p->children[5]->children[0]->innerText);
+        $this->assertEquals('?', $p->children[6]->innerText);
+    }
+
+    public function testDeeplyBrokenHtml() {
+        $html = '<div><ul><li>One<li>Two<li>Three</ul><p>Para';
+        $root = HtmlParser::parse($html);
+        $div = $root->children[0];
+        $this->assertEquals('ul', $div->children[0]->tag);
+        $this->assertEquals('li', $div->children[0]->children[0]->tag);
+        $this->assertEquals('Three', $div->children[0]->children[2]->children[0]->innerText);
+        $this->assertEquals('p', $div->children[1]->tag);
+        $this->assertEquals('Para', $div->children[1]->children[0]->innerText);
+    }
+
+    public function testScriptWithCdataAndComment() {
+        $html = '<script><![CDATA[var x = 1;]]><!-- comment --></script>';
+        $root = HtmlParser::parse($html);
+        $script = $root->children[0];
+        $this->assertEquals('script', $script->tag);
+        $this->assertStringContainsString('CDATA', $script->children[0]->toHtml());
+        $this->assertStringContainsString('comment', $script->children[0]->toHtml());
+    }
+
+    public function testAttributeWithSpecialCharacters() {
+        $html = '<div data-json="{&quot;foo&quot;:1, &quot;bar&quot;:2}"></div>';
+        $root = HtmlParser::parse($html);
+        $div = $root->children[0];
+        $this->assertEquals('{"foo":1, "bar":2}', $div->attributes['data-json']);
+    }
+
+    public function testEmptyElements() {
+        $html = '<div></div><span></span><p></p>';
+        $root = HtmlParser::parse($html);
+        $this->assertEquals('div', $root->children[0]->tag);
+        $this->assertEquals('span', $root->children[1]->tag);
+        $this->assertEquals('p', $root->children[2]->tag);
+        $this->assertEmpty($root->children[0]->children);
+        $this->assertEmpty($root->children[1]->children);
+        $this->assertEmpty($root->children[2]->children);
+    }
+
+    public function testMultipleRootElements() {
+        $html = '<header>Header</header><main>Main</main><footer>Footer</footer>';
+        $root = HtmlParser::parse($html);
+        $this->assertEquals('header', $root->children[0]->tag);
+        $this->assertEquals('main', $root->children[1]->tag);
+        $this->assertEquals('footer', $root->children[2]->tag);
+    }
+
+    public function testCaseInsensitiveTags() {
+        $html = '<DIV><SpAn>Test</SpAn></DIV>';
+        $root = HtmlParser::parse($html);
+        $this->assertEquals('div', $root->children[0]->tag);
+        $this->assertEquals('span', $root->children[0]->children[0]->tag);
+        $this->assertEquals('Test', $root->children[0]->children[0]->children[0]->innerText);
+    }
+
+    public function testNamespaceWithHyphen() {
+        $html = '<xlink:href>value</xlink:href>';
+        $root = HtmlParser::parse($html);
+        $xlink = $root->children[0];
+        $this->assertEquals('xlink', $xlink->namespace);
+        $this->assertEquals('href', $xlink->tag);
+        $this->assertEquals('value', $xlink->children[0]->innerText);
+    }
+
+    public function testPerformanceLargeFlatHtml() {
+        $html = '<ul>' . str_repeat('<li>Item</li>', 10000) . '</ul>';
+        $start = microtime(true);
+        $root = HtmlParser::parse($html);
+        $duration = microtime(true) - $start;
+        $ul = $root->children[0];
+        $this->assertEquals('ul', $ul->tag);
+        $this->assertCount(10000, $ul->children);
+        $this->assertLessThan(2, $duration, 'Parsing 10,000 flat elements should be fast');
+    }
+
+    public function testPerformanceLargeNestedHtml() {
+        $html = '';
+        for ($i = 0; $i < 2000; $i++) {
+            $html .= '<div>';
+        }
+        $html .= 'end';
+        for ($i = 0; $i < 2000; $i++) {
+            $html .= '</div>';
+        }
+        $start = microtime(true);
+        $root = HtmlParser::parse($html);
+        $duration = microtime(true) - $start;
+        $node = $root->children[0];
+        for ($i = 0; $i < 1999; $i++) {
+            $this->assertEquals('div', $node->tag);
+            $node = $node->children[0];
+        }
+        $this->assertEquals('div', $node->tag);
+        $this->assertEquals('end', $node->children[0]->innerText);
+        $this->assertLessThan(2, $duration, 'Parsing 2000 nested elements should be fast');
+    }
+
+    public function testPerformanceManyAttributes() {
+        $attrs = [];
+        for ($i = 0; $i < 100; $i++) {
+            $attrs[] = 'data-x' . $i . '="' . $i . '"';
+        }
+        $html = '<div ' . implode(' ', $attrs) . '>content</div>';
+        $start = microtime(true);
+        $root = HtmlParser::parse($html);
+        $duration = microtime(true) - $start;
+        $div = $root->children[0];
+        $this->assertEquals('div', $div->tag);
+        for ($i = 0; $i < 100; $i++) {
+            $this->assertEquals((string)$i, $div->attributes['data-x' . $i]);
+        }
+        $this->assertLessThan(1, $duration, 'Parsing 100 attributes should be fast');
+    }
 }

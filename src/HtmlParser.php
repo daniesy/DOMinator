@@ -68,7 +68,14 @@ class HtmlParser {
             }
             // Closing tag
             elseif (preg_match('/^<\/([a-zA-Z0-9\-:]+)>/', $substr, $m)) {
-                array_pop($stack);
+                $closeTag = strtolower($m[1]);
+                // Pop the stack until we find the matching tag or root
+                for ($i = count($stack) - 1; $i > 0; $i--) {
+                    if ($stack[$i]->tag === $closeTag) {
+                        $stack = array_slice($stack, 0, $i);
+                        break;
+                    }
+                }
                 $offset += strlen($m[0]);
             }
             // Text node
@@ -84,6 +91,10 @@ class HtmlParser {
             } else {
                 $offset++;
             }
+        }
+        // Handle any unclosed tags at the end (auto-close)
+        while (count($stack) > 1) {
+            array_pop($stack);
         }
         if (count($root->children) === 1 && $root->children[0]->tag === 'html') {
             $htmlNode = $root->children[0];
