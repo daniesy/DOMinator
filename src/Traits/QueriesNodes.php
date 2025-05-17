@@ -3,15 +3,18 @@
 namespace Daniesy\DOMinator\Traits;
 
 use Daniesy\DOMinator\HtmlNode;
+use Daniesy\DOMinator\NodeList;
 
 trait QueriesNodes {
     /**
      * Returns all descendant elements matching the selector (CSS-like).
+     *
+     * @return NodeList A NodeList containing all matching elements
      */
-    public function querySelectorAll(string $selector): array {
+    public function querySelectorAll(string $selector): NodeList {
         $results = [];
         $this->traverseQuery($this, $selector, $results);
-        return $results;
+        return new NodeList($results);
     }
 
     /**
@@ -25,11 +28,13 @@ trait QueriesNodes {
 
     /**
      * Returns all descendant elements with the given tag name (case-insensitive).
+     *
+     * @return NodeList A NodeList containing all matching elements
      */
-    public function getElementsByTagName(string $tag): array {
+    public function getElementsByTagName(string $tag): NodeList {
         $results = [];
         $this->traverseTag($this, strtolower($tag), $results);
-        return $results;
+        return new NodeList($results);
     }
 
     // --- Internal Query Helpers ---

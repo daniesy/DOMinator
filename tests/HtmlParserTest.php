@@ -43,36 +43,36 @@ class HtmlParserTest extends TestCase {
         $root = HtmlParser::parse($html);
         $nodes = $root->querySelectorAll('.foo');
         $this->assertCount(1, $nodes);
-        $this->assertEquals('span', $nodes[0]->tag);
-        $this->assertEquals('A', $nodes[0]->getInnerText());
+        $this->assertEquals('span', $nodes->item(0)->tag);
+        $this->assertEquals('A', $nodes->item(0)->getInnerText());
     }
 
     public function testSetInnerText() {
         $html = '<div><span class="foo">A</span></div>';
         $root = HtmlParser::parse($html);
         $nodes = $root->querySelectorAll('.foo');
-        $nodes[0]->setInnerText('B');
-        $this->assertEquals('B', $nodes[0]->getInnerText());
+        $nodes->item(0)->setInnerText('B');
+        $this->assertEquals('B', $nodes->item(0)->getInnerText());
     }
 
     public function testSetAndRemoveAttribute() {
         $html = '<div><span class="foo">A</span></div>';
         $root = HtmlParser::parse($html);
         $nodes = $root->querySelectorAll('span');
-        $nodes[0]->setAttribute('id', 'test');
-        $this->assertEquals('test', $nodes[0]->attributes['id']);
-        $nodes[0]->removeAttribute('id');
-        $this->assertArrayNotHasKey('id', $nodes[0]->attributes);
+        $nodes->item(0)->setAttribute('id', 'test');
+        $this->assertEquals('test', $nodes->item(0)->attributes['id']);
+        $nodes->item(0)->removeAttribute('id');
+        $this->assertArrayNotHasKey('id', $nodes->item(0)->attributes);
     }
 
     public function testRemoveNode() {
         $html = '<div><span class="foo">A</span><span>B</span></div>';
         $root = HtmlParser::parse($html);
         $nodes = $root->querySelectorAll('.foo');
-        $nodes[0]->remove();
+        $nodes->item(0)->remove();
         $spans = $root->querySelectorAll('span');
         $this->assertCount(1, $spans);
-        $this->assertEquals('B', $spans[0]->getInnerText());
+        $this->assertEquals('B', $spans->item(0)->getInnerText());
     }
 
     public function testSelfClosingAndVoidElements() {

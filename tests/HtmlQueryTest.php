@@ -9,8 +9,8 @@ class HtmlQueryTest extends TestCase {
         $root = HtmlParser::parse($html);
         $spans = $root->querySelectorAll('span');
         $this->assertCount(2, $spans);
-        $this->assertEquals('A', $spans[0]->getInnerText());
-        $this->assertEquals('B', $spans[1]->getInnerText());
+        $this->assertEquals('A', $spans->item(0)->getInnerText());
+        $this->assertEquals('B', $spans->item(1)->getInnerText());
     }
 
     public function testQuerySelectorAllClass() {
@@ -18,8 +18,8 @@ class HtmlQueryTest extends TestCase {
         $root = HtmlParser::parse($html);
         $foo = $root->querySelectorAll('.foo');
         $this->assertCount(2, $foo);
-        $this->assertEquals('A', $foo[0]->getInnerText());
-        $this->assertEquals('C', $foo[1]->getInnerText());
+        $this->assertEquals('A', $foo->item(0)->getInnerText());
+        $this->assertEquals('C', $foo->item(1)->getInnerText());
         $bar = $root->querySelectorAll('.bar');
         $this->assertCount(2, $bar);
     }
@@ -29,10 +29,10 @@ class HtmlQueryTest extends TestCase {
         $root = HtmlParser::parse($html);
         $x = $root->querySelectorAll('#x');
         $this->assertCount(1, $x);
-        $this->assertEquals('A', $x[0]->getInnerText());
+        $this->assertEquals('A', $x->item(0)->getInnerText());
         $y = $root->querySelectorAll('#y');
         $this->assertCount(1, $y);
-        $this->assertEquals('B', $y[0]->getInnerText());
+        $this->assertEquals('B', $y->item(0)->getInnerText());
     }
 
     public function testQuerySelectorAllAttribute() {
@@ -40,11 +40,11 @@ class HtmlQueryTest extends TestCase {
         $root = HtmlParser::parse($html);
         $x1 = $root->querySelectorAll('[data-x=1]');
         $this->assertCount(2, $x1);
-        $this->assertEquals('A', $x1[0]->getInnerText());
-        $this->assertEquals('C', $x1[1]->getInnerText());
+        $this->assertEquals('A', $x1->item(0)->getInnerText());
+        $this->assertEquals('C', $x1->item(1)->getInnerText());
         $x2 = $root->querySelectorAll('[data-x=2]');
         $this->assertCount(1, $x2);
-        $this->assertEquals('B', $x2[0]->getInnerText());
+        $this->assertEquals('B', $x2->item(0)->getInnerText());
     }
 
     public function testQuerySelectorAllNoMatch() {
@@ -59,8 +59,8 @@ class HtmlQueryTest extends TestCase {
         $root = HtmlParser::parse($html);
         $foo = $root->querySelectorAll('.foo');
         $this->assertCount(2, $foo);
-        $this->assertEquals('A', $foo[0]->getInnerText());
-        $this->assertEquals('B', $foo[1]->getInnerText());
+        $this->assertEquals('A', $foo->item(0)->getInnerText());
+        $this->assertEquals('B', $foo->item(1)->getInnerText());
     }
 
     public function testQuerySelectorAllMultipleClasses() {
@@ -70,10 +70,10 @@ class HtmlQueryTest extends TestCase {
         $bar = $root->querySelectorAll('.bar');
         $this->assertCount(2, $foo);
         $this->assertCount(2, $bar);
-        $this->assertEquals('A', $foo[0]->getInnerText());
-        $this->assertEquals('B', $foo[1]->getInnerText());
-        $this->assertEquals('A', $bar[0]->getInnerText());
-        $this->assertEquals('C', $bar[1]->getInnerText());
+        $this->assertEquals('A', $foo->item(0)->getInnerText());
+        $this->assertEquals('B', $foo->item(1)->getInnerText());
+        $this->assertEquals('A', $bar->item(0)->getInnerText());
+        $this->assertEquals('C', $bar->item(1)->getInnerText());
     }
 
     public function testQuerySelectorAllNestedTags() {
@@ -81,8 +81,8 @@ class HtmlQueryTest extends TestCase {
         $root = HtmlParser::parse($html);
         $spans = $root->querySelectorAll('span');
         $this->assertCount(2, $spans);
-        $this->assertEquals('A', $spans[0]->getInnerText());
-        $this->assertEquals('B', $spans[1]->getInnerText());
+        $this->assertEquals('A', $spans->item(0)->getInnerText());
+        $this->assertEquals('B', $spans->item(1)->getInnerText());
     }
 
     public function testQuerySelectorAllAttributeNoValue() {
@@ -90,7 +90,7 @@ class HtmlQueryTest extends TestCase {
         $root = HtmlParser::parse($html);
         $checked = $root->querySelectorAll('[checked=]');
         $this->assertCount(1, $checked);
-        $this->assertEquals('input', $checked[0]->tag);
+        $this->assertEquals('input', $checked->item(0)->tag);
     }
 
     public function testQuerySelectorAllWithHyphenAttribute() {
@@ -98,7 +98,7 @@ class HtmlQueryTest extends TestCase {
         $root = HtmlParser::parse($html);
         $x1 = $root->querySelectorAll('[data-x=1]');
         $this->assertCount(1, $x1);
-        $this->assertEquals('A', $x1[0]->getInnerText());
+        $this->assertEquals('A', $x1->item(0)->getInnerText());
     }
 
     public function testQuerySelectorAllIdAndClass() {
@@ -108,8 +108,8 @@ class HtmlQueryTest extends TestCase {
         $bar = $root->querySelectorAll('.bar');
         $this->assertCount(1, $foo);
         $this->assertCount(1, $bar);
-        $this->assertEquals('A', $foo[0]->getInnerText());
-        $this->assertEquals('A', $bar[0]->getInnerText());
+        $this->assertEquals('A', $foo->item(0)->getInnerText());
+        $this->assertEquals('A', $bar->item(0)->getInnerText());
     }
 
     public function testQuerySelectorAllNoMatchComplex() {
@@ -131,16 +131,16 @@ class HtmlQueryTest extends TestCase {
         $root = HtmlParser::parse($html);
         $spans = $root->querySelectorAll('span');
         $this->assertCount(1, $spans);
-        $this->assertEquals('A', $spans[0]->getInnerText());
+        $this->assertEquals('A', $spans->item(0)->getInnerText());
     }
 
     public function testQuerySelectorAllOnChildNode() {
         $html = '<div><section><span class="foo">A</span></section><span class="foo">B</span></div>';
         $root = HtmlParser::parse($html);
-        $section = $root->querySelectorAll('section')[0];
+        $section = $root->querySelectorAll('section')->item(0);
         $foo = $section->querySelectorAll('.foo');
         $this->assertCount(1, $foo);
-        $this->assertEquals('A', $foo[0]->getInnerText());
+        $this->assertEquals('A', $foo->item(0)->getInnerText());
     }
 
     public function testQuerySelectorReturnsFirstMatch() {
@@ -163,8 +163,8 @@ class HtmlQueryTest extends TestCase {
         $root = HtmlParser::parse($html);
         $spans = $root->getElementsByTagName('span');
         $this->assertCount(2, $spans);
-        $this->assertEquals('A', $spans[0]->getInnerText());
-        $this->assertEquals('B', $spans[1]->getInnerText());
+        $this->assertEquals('A', $spans->item(0)->getInnerText());
+        $this->assertEquals('B', $spans->item(1)->getInnerText());
     }
 
     public function testGetElementsByTagNameCaseInsensitive() {

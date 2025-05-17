@@ -49,6 +49,11 @@ foreach ($root->children as $child) {
 ```php
 // Find all elements with class="foo"
 $nodes = $root->querySelectorAll('.foo');
+// Access by index using item() method
+echo $nodes->item(0)->getInnerText();
+// Get the number of nodes
+echo $nodes->length;
+// Iterate over nodes
 foreach ($nodes as $node) {
     echo $node->getInnerText();
 }
@@ -61,6 +66,9 @@ if ($span) {
 
 // Find all <div> elements (case-insensitive)
 $divs = $root->getElementsByTagName('div');
+// Access by index
+echo $divs->item(0)->getInnerText();
+// Iterate over nodes
 foreach ($divs as $div) {
     echo $div->getInnerText();
 }
@@ -69,7 +77,7 @@ foreach ($divs as $div) {
 ### Manipulating Nodes
 
 ```php
-$node = $nodes[0];
+$node = $nodes->item(0);
 $node->setAttribute('id', 'new-id');
 $node->setInnerText('Updated text');
 $node->remove(); // Remove from parent
@@ -86,7 +94,12 @@ $html = $root->toHtml();
 ```php
 $html = '<svg:rect width="100" height="100"/>';
 $root = HtmlParser::parse($html);
-$svg = $root->children[0];
+$svg = $root->children[0]; // Direct access to children array is still available
+echo $svg->namespace; // 'svg'
+echo $svg->tag;       // 'rect'
+
+// Alternatively, you can use querySelector
+$svg = $root->querySelector('svg\\:rect');
 echo $svg->namespace; // 'svg'
 echo $svg->tag;       // 'rect'
 ```
@@ -120,9 +133,18 @@ echo $svg->tag;       // 'rect'
   - `removeAttribute($name)`: Remove attribute
   - `remove()`: Remove node from parent
   - `toHtml()`: Export node and children as HTML
-  - `querySelectorAll($selector)`: Returns array of matching nodes (CSS selector)
+  - `querySelectorAll($selector)`: Returns a NodeList of matching nodes (CSS selector)
   - `querySelector($selector)`: Returns the first matching node or null
-  - `getElementsByTagName($tag)`: Returns array of nodes with the given tag name (case-insensitive)
+  - `getElementsByTagName($tag)`: Returns a NodeList of nodes with the given tag name (case-insensitive)
+
+### `NodeList`
+
+- Properties:
+  - `length`: The number of nodes in the list
+- Methods:
+  - `item($index)`: Returns the node at the specified index, or null if the index is out of range
+  - `count()`: Returns the number of nodes in the list (implements Countable)
+  - `getIterator()`: Returns an iterator for the nodes in the list (implements IteratorAggregate)
 
 ## Testing
 
