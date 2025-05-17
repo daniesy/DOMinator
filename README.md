@@ -93,8 +93,8 @@ $html = $root->toHtml();
 
 ```php
 $html = '<svg:rect width="100" height="100"/>';
-$root = HtmlParser::parse($html);
-$svg = $root->children[0]; // Direct access to children array is still available
+$root = DOMinator::parse($html);
+$svg = $root->children->item(0); // Direct access to children array is still available
 echo $svg->namespace; // 'svg'
 echo $svg->tag;       // 'rect'
 
@@ -106,14 +106,14 @@ echo $svg->tag;       // 'rect'
 
 ### Parsing Options
 
-- `HtmlParser::parse($html, $normalizeWhitespace = false)`
+- `DOMinator::parse($html, $normalizeWhitespace = false)`
   - Set `$normalizeWhitespace` to `true` to collapse whitespace in text nodes.
 
 ## API Reference
 
-### `HtmlParser`
+### `DOMinator`
 
-- `HtmlParser::parse(string $html, bool $normalizeWhitespace = false): HtmlNode`
+- `DOMinator::parse(string $html, bool $normalizeWhitespace = false): HtmlNode`
   - Parses HTML and returns the root node.
 
 ### `HtmlNode`
@@ -156,7 +156,7 @@ vendor/bin/phpunit tests
 
 ## Examples
 
-See `tests/HtmlParserTest.php`, `tests/HtmlNodeTest.php`, and `tests/HtmlQueryTest.php` for comprehensive usage and edge cases.
+See `tests/DOMinatorTest.php`, `tests/NodeTest.php`, and `tests/QueryTest.php` for comprehensive usage and edge cases.
 
 ## License
 
