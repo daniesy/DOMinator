@@ -16,7 +16,7 @@ class NodeList implements IteratorAggregate, Countable {
     /**
      * @var int The number of nodes in the list
      */
-    public readonly int $length;
+    public int $length;
 
     /**
      * NodeList constructor.
@@ -26,6 +26,29 @@ class NodeList implements IteratorAggregate, Countable {
     public function __construct(array $nodes = []) {
         $this->nodes = $nodes;
         $this->length = count($nodes);
+    }
+
+    /**
+     * Add a node to the list
+     *
+     * @param Node $node
+     * @return $this
+     */
+    public function add(Node $node): self
+    {
+        $this->nodes[] = $node;
+        $this->length++;
+        return $this;
+    }
+
+    /**
+     * Remove a node from the list
+     */
+    public function remove(Node $node): self
+    {
+        $this->nodes = array_filter($this->nodes, fn($n) => $n !== $node);
+        $this->length--;
+        return $this;
     }
 
     /**

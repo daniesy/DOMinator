@@ -3,7 +3,7 @@ use PHPUnit\Framework\TestCase;
 use Daniesy\DOMinator\DOMinator;
 use Daniesy\DOMinator\HtmlQuery;
 
-class HtmlQueryTest extends TestCase {
+class QueryTest extends TestCase {
     public function testQuerySelectorAllTag() {
         $html = '<div><span>A</span><span>B</span><p>C</p></div>';
         $root = DOMinator::parse($html);

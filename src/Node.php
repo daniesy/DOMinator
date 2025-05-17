@@ -1,14 +1,16 @@
 <?php
 namespace Daniesy\DOMinator;
 
+use Daniesy\DOMinator\Traits\HandlesAttributes;
 use Daniesy\DOMinator\Traits\QueriesNodes;
 use Daniesy\DOMinator\Traits\ModifiesNode;
+use Daniesy\DOMinator\Traits\ReadsNode;
 
 // Represents a node in the HTML tree (element or text)
 class Node {
-    use QueriesNodes, ModifiesNode;
+    use QueriesNodes, ModifiesNode, HandlesAttributes;
 
-    public array $children = [];
+    public NodeList $children;
     public ?Node $parent = null;
     public string $doctype = '';
 
@@ -20,14 +22,18 @@ class Node {
         public bool $isComment = false,
         public bool $isCdata = false,
         public string $namespace = ''
-    ) {}
-
-    public function appendChild($child) {
-        $child->parent = $this;
-        $this->children[] = $child;
+    ) {
+        $this->children = new NodeList();
     }
 
-    public function getInnerText() {
+    public function appendChild($child): void
+    {
+        $child->parent = $this;
+        $this->children->add($child);;
+    }
+
+    public function getInnerText(): string
+    {
         if ($this->isText) {
             return $this->innerText;
         }
@@ -38,7 +44,8 @@ class Node {
         return $text;
     }
 
-    public function toHtml() {
+    public function toHtml(): string
+    {
         // Special handling: if this is the artificial root node, only export its children
         if ($this->tag === 'root') {
             $html = '';
@@ -69,7 +76,7 @@ class Node {
             $attr .= ' ' . $k . '="' . htmlspecialchars_decode(htmlspecialchars($v)) . '"';
         }
         $html .= "<{$this->tag}{$attr}>";
-        if ($this->children) {
+        if ($this->children->length) {
             foreach ($this->children as $child) {
                 $html .= $child->toHtml();
             }

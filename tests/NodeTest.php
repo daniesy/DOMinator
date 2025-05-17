@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 use Daniesy\DOMinator\Node;
 
-class HtmlNodeTest extends TestCase {
+class NodeTest extends TestCase {
     public function testTextNode() {
         $node = new Node('', [], true, 'Hello');
         $this->assertTrue($node->isText);
@@ -36,7 +36,7 @@ class HtmlNodeTest extends TestCase {
         $node = new Node('div');
         $node->setInnerText('abc');
         $this->assertEquals('abc', $node->getInnerText());
-        $this->assertTrue($node->children[0]->isText);
+        $this->assertTrue($node->children->item(0)->isText);
         $node->setInnerText('def');
         $this->assertEquals('def', $node->getInnerText());
     }
@@ -76,8 +76,8 @@ class HtmlNodeTest extends TestCase {
         $parent->appendChild($li1);
         $parent->appendChild($li2);
         $this->assertCount(2, $parent->children);
-        $this->assertEquals('A', $parent->children[0]->children[0]->innerText);
-        $this->assertEquals('B', $parent->children[1]->children[0]->innerText);
+        $this->assertEquals('A', $parent->children->item(0)->children->item(0)->innerText);
+        $this->assertEquals('B', $parent->children->item(1)->children->item(0)->innerText);
     }
 
     public function testSetInnerTextOnTextNode() {
@@ -92,7 +92,7 @@ class HtmlNodeTest extends TestCase {
         $node->setInnerText('y');
         $this->assertEquals('y', $node->getInnerText());
         $this->assertCount(1, $node->children);
-        $this->assertTrue($node->children[0]->isText);
+        $this->assertTrue($node->children->item(0)->isText);
     }
 
     public function testToHtmlWithNestedElements() {

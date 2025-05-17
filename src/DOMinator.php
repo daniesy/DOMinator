@@ -99,8 +99,8 @@ class DOMinator {
         while (count($stack) > 1) {
             array_pop($stack);
         }
-        if (count($root->children) === 1 && $root->children[0]->tag === 'html') {
-            $htmlNode = $root->children[0];
+        if (count($root->children) === 1 && $root->children->item(0)->tag === 'html') {
+            $htmlNode = $root->children->item(0);
             $htmlNode->doctype = $doctype;
             return $htmlNode;
         }

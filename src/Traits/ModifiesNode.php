@@ -3,6 +3,7 @@
 namespace Daniesy\DOMinator\Traits;
 
 use Daniesy\DOMinator\Node;
+use Daniesy\DOMinator\NodeList;
 
 trait ModifiesNode {
     /**
@@ -18,26 +19,9 @@ trait ModifiesNode {
      */
     public function remove(): void {
         if ($this->parent) {
-            $this->parent->children = array_filter(
-                $this->parent->children,
-                fn($c) => $c !== $this
-            );
+            $this->parent->children->remove($this);
             $this->parent = null;
         }
-    }
-
-    /**
-     * Sets or updates an attribute.
-     */
-    public function setAttribute(string $name, $value): void {
-        $this->attributes[$name] = $value;
-    }
-
-    /**
-     * Removes an attribute.
-     */
-    public function removeAttribute(string $name): void {
-        unset($this->attributes[$name]);
     }
 
     /**
@@ -47,7 +31,7 @@ trait ModifiesNode {
         if ($this->isText) {
             $this->innerText = $text;
         } else {
-            $this->children = [];
+            $this->children = new NodeList;
             if ($text !== '') {
                 $textNode = new Node('', [], true, $text);
                 $this->appendChild($textNode);
