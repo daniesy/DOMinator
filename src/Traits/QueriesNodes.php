@@ -2,7 +2,7 @@
 
 namespace Daniesy\DOMinator\Traits;
 
-use Daniesy\DOMinator\HtmlNode;
+use Daniesy\DOMinator\Node;
 use Daniesy\DOMinator\NodeList;
 
 trait QueriesNodes {
@@ -38,7 +38,7 @@ trait QueriesNodes {
     }
 
     // --- Internal Query Helpers ---
-    private function traverseQuery(HtmlNode $node, string $selector, array &$results, bool $firstOnly = false): void {
+    private function traverseQuery(Node $node, string $selector, array &$results, bool $firstOnly = false): void {
         if ($this->matchesQuery($node, $selector)) {
             $results[] = $node;
             if ($firstOnly) return;
@@ -49,7 +49,7 @@ trait QueriesNodes {
         }
     }
 
-    private function traverseTag(HtmlNode $node, string $tag, array &$results): void {
+    private function traverseTag(Node $node, string $tag, array &$results): void {
         if (!$node->isText && strtolower($node->tag) === $tag) {
             $results[] = $node;
         }
@@ -58,7 +58,7 @@ trait QueriesNodes {
         }
     }
 
-    private function matchesQuery(HtmlNode $node, string $selector): bool {
+    private function matchesQuery(Node $node, string $selector): bool {
         if ($node->isText) return false;
         // tag
         if (preg_match('/^[a-zA-Z0-9\-]+$/', $selector)) {

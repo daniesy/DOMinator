@@ -5,11 +5,11 @@ use Daniesy\DOMinator\Traits\QueriesNodes;
 use Daniesy\DOMinator\Traits\ModifiesNode;
 
 // Represents a node in the HTML tree (element or text)
-class HtmlNode {
+class Node {
     use QueriesNodes, ModifiesNode;
 
     public array $children = [];
-    public ?HtmlNode $parent = null;
+    public ?Node $parent = null;
     public string $doctype = '';
 
     public function __construct(

@@ -1,8 +1,8 @@
 <?php
 namespace Daniesy\DOMinator;
-require_once __DIR__ . '/HtmlNode.php';
+require_once __DIR__ . '/Node.php';
 
-class HtmlParser {
+class DOMinator {
     private static array $voidElements = [
         'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr',
     ];
@@ -10,14 +10,14 @@ class HtmlParser {
     // No instance properties to promote; all methods are static.
     // No changes needed for constructor property promotion.
 
-    public static function parse(string $html, bool $normalizeWhitespace = false): HtmlNode {
+    public static function parse(string $html, bool $normalizeWhitespace = false): Node {
         $html = trim($html);
         $doctype = '';
         if (preg_match('/^<!DOCTYPE[^>]*>/i', $html, $m)) {
             $doctype = $m[0];
             $html = ltrim(substr($html, strlen($m[0])));
         }
-        $root = new HtmlNode('root');
+        $root = new Node('root');
         $stack = [$root];
         $offset = 0;
         $len = strlen($html);
@@ -25,21 +25,21 @@ class HtmlParser {
             $substr = substr($html, $offset);
             // Comment
             if (preg_match('/^<!--(.*?)-->/s', $substr, $m)) {
-                $node = new HtmlNode('', [], false, $m[1], true);
+                $node = new Node('', [], false, $m[1], true);
                 end($stack)->appendChild($node);
                 $offset += strlen($m[0]);
             }
             // CDATA
             elseif (preg_match('/^<!\[CDATA\[(.*?)\]\]>/s', $substr, $m)) {
-                $node = new HtmlNode('', [], false, $m[1], false, true);
+                $node = new Node('', [], false, $m[1], false, true);
                 end($stack)->appendChild($node);
                 $offset += strlen($m[0]);
             }
             // Script/style raw content
             elseif (preg_match('/^<(script|style)([^>]*)>([\s\S]*?)<\/\1>/i', $substr, $m)) {
                 $attrs = self::parseAttributes($m[2]);
-                $node = new HtmlNode(strtolower($m[1]), $attrs);
-                $textNode = new HtmlNode('', [], true, $m[3]);
+                $node = new Node(strtolower($m[1]), $attrs);
+                $textNode = new Node('', [], true, $m[3]);
                 $node->appendChild($textNode);
                 end($stack)->appendChild($node);
                 $offset += strlen($m[0]);
@@ -62,7 +62,7 @@ class HtmlParser {
                         array_pop($stack);
                     }
                 }
-                $node = new HtmlNode($tag, $attrs, false, '', false, false, $namespace);
+                $node = new Node($tag, $attrs, false, '', false, false, $namespace);
                 end($stack)->appendChild($node);
                 $offset += strlen($m[0]);
                 if (!$isVoid) {
@@ -88,7 +88,7 @@ class HtmlParser {
                     // Collapse all whitespace (space, tab, newline, etc) to a single space
                     $text = preg_replace('/\s+/', ' ', $text);
                 }
-                $textNode = new HtmlNode('', [], true, html_entity_decode($text));
+                $textNode = new Node('', [], true, html_entity_decode($text));
                 end($stack)->appendChild($textNode);
                 $offset += strlen($m[1]);
             } else {
@@ -108,21 +108,21 @@ class HtmlParser {
         return $root;
     }
 
-    private static function parseSingleNode(string $html): HtmlNode {
+    private static function parseSingleNode(string $html): Node {
         $html = trim($html);
         if (preg_match('/^<([a-zA-Z0-9\-]+)([^>]*)>([\s\S]*)<\/\1>$/', $html, $m)) {
             $tag = $m[1];
             $attrStr = $m[2];
             $inner = $m[3];
             $attrs = self::parseAttributes($attrStr);
-            $node = new HtmlNode($tag, $attrs);
+            $node = new Node($tag, $attrs);
             $childrenRoot = self::parse($inner);
             foreach ($childrenRoot->children as $child) {
                 $node->appendChild($child);
             }
             return $node;
         }
-        return new HtmlNode('root');
+        return new Node('root');
     }
 
     private static function parseAttributes(string $str): array {

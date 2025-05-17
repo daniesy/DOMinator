@@ -9,7 +9,7 @@ use ArrayIterator;
 
 class NodeList implements IteratorAggregate, Countable {
     /**
-     * @var HtmlNode[] The array of nodes
+     * @var Node[] The array of nodes
      */
     private array $nodes;
 
@@ -21,7 +21,7 @@ class NodeList implements IteratorAggregate, Countable {
     /**
      * NodeList constructor.
      *
-     * @param HtmlNode[] $nodes Array of HtmlNode objects
+     * @param Node[] $nodes Array of Node objects
      */
     public function __construct(array $nodes = []) {
         $this->nodes = $nodes;
@@ -32,9 +32,9 @@ class NodeList implements IteratorAggregate, Countable {
      * Returns the node at the specified index, or null if the index is out of range.
      *
      * @param int $index The index of the node to return
-     * @return HtmlNode|null The node at the specified index, or null if the index is out of range
+     * @return Node|null The node at the specified index, or null if the index is out of range
      */
-    public function item(int $index): ?HtmlNode {
+    public function item(int $index): ?Node {
         return $this->nodes[$index] ?? null;
     }
 

@@ -2,13 +2,13 @@
 
 namespace Daniesy\DOMinator\Traits;
 
-use Daniesy\DOMinator\HtmlNode;
+use Daniesy\DOMinator\Node;
 
 trait ModifiesNode {
     /**
      * Appends a child node to this node.
      */
-    public function appendChild(HtmlNode $child): void {
+    public function appendChild(Node $child): void {
         $child->parent = $this;
         $this->children[] = $child;
     }
@@ -49,7 +49,7 @@ trait ModifiesNode {
         } else {
             $this->children = [];
             if ($text !== '') {
-                $textNode = new HtmlNode('', [], true, $text);
+                $textNode = new Node('', [], true, $text);
                 $this->appendChild($textNode);
             }
         }

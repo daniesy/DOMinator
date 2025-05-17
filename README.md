@@ -30,10 +30,10 @@ Or include the `src/` files directly in your project.
 ### Basic Parsing
 
 ```php
-use Daniesy\DOMinator\HtmlParser;
+use Daniesy\DOMinator\DOMinator;
 
 $html = '<div id="main"><p>Hello <b>World</b></p></div>';
-$root = HtmlParser::parse($html);
+$root = DOMinator::parse($html);
 ```
 
 ### Traversing the DOM

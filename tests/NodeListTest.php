@@ -1,6 +1,6 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use Daniesy\DOMinator\HtmlParser;
+use Daniesy\DOMinator\DOMinator;
 use Daniesy\DOMinator\NodeList;
 
 class NodeListTest extends TestCase {
@@ -9,7 +9,7 @@ class NodeListTest extends TestCase {
 
     protected function setUp(): void {
         $this->html = '<div><span>A</span><span>B</span><p>C</p></div>';
-        $this->root = HtmlParser::parse($this->html);
+        $this->root = DOMinator::parse($this->html);
     }
 
     public function testNodeListLength() {
