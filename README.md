@@ -10,8 +10,8 @@ A robust, fast, and fully-featured HTML5 parser and query engine for PHP. Parse,
 - **Whitespace normalization**: Optionally normalizes whitespace in text nodes.
 - **Namespaces**: Supports XML/HTML namespaces (e.g., `svg:rect`).
 - **Attribute handling**: Handles quoted/unquoted and boolean attributes.
-- **Query engine**: Powerful CSS-like selectors for finding nodes (call `querySelectorAll`, `querySelector`, or `getElementsByTagName` directly on any `HtmlNode`).
-- **Node manipulation**: Add, remove, set attributes, change text, and more (`HtmlNode`).
+- **Query engine**: Powerful CSS-like selectors for finding nodes (call `querySelectorAll`, `querySelector`, or `getElementsByTagName` directly on any `Node`).
+- **Node manipulation**: Add, remove, set attributes, change text, and more (`Node`).
 - **Performance**: Optimized for large and deeply nested documents.
 - **Comprehensive tests**: Includes extensive tests for all features and edge cases.
 
@@ -113,10 +113,10 @@ echo $svg->tag;       // 'rect'
 
 ### `DOMinator`
 
-- `DOMinator::read(string $html, bool $normalizeWhitespace = false): HtmlNode`
+- `DOMinator::read(string $html, bool $normalizeWhitespace = false): Node`
   - Parses HTML and returns the root node.
 
-### `HtmlNode`
+### `Node`
 
 - Properties:
   - `tag`: Tag name (e.g., 'div')
