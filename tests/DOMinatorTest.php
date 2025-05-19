@@ -555,7 +555,7 @@ class DOMinatorTest extends TestCase {
         $html = '<div><span>A</span><span>B</span></div>';
         $root = DOMinator::read($html);
         $pretty = $root->toHtml(false);
-        $expected = "<div>\n    <span>\n        A\n    </span>\n    <span>\n        B\n    </span>\n</div>";
+        $expected = "<div>\n    <span>A</span>\n    <span>B</span>\n</div>";
         $this->assertEquals($expected, trim($pretty));
         // Minified output should not have newlines or indentation
         $minified = $root->toHtml(true);
@@ -569,7 +569,7 @@ class DOMinatorTest extends TestCase {
         $html = $xmlDecl . $doctype . '<html><body><div><span>A</span></div></body></html>';
         $root = DOMinator::read($html);
         $pretty = $root->toHtml(false);
-        $expected = $xmlDecl . "\n" . $doctype . "\n<html>\n    <body>\n        <div>\n            <span>\n                A\n            </span>\n        </div>\n    </body>\n</html>";
+        $expected = $xmlDecl . "\n" . $doctype . "\n<html>\n    <body>\n        <div>\n            <span>A</span>\n        </div>\n    </body>\n</html>";
         $this->assertEquals($expected, trim($pretty));
     }
 
@@ -587,9 +587,33 @@ class DOMinatorTest extends TestCase {
         $html = '<style>.x { color: blue; }</style><span class="x">T</span>';
         $root = DOMinator::read($html);
         $pretty = $root->toInlinedHtml(false);
-        $expected = "<span class=\"x\" style=\"color: blue;\">\n    T\n</span>";
+        $expected = "<span class=\"x\" style=\"color: blue;\">T</span>";
         $this->assertEquals($expected, trim($pretty));
         $this->assertStringNotContainsString('<style>', $pretty);
+
+        $html = '<button >
+    <div>
+        <svg>
+            <title >
+ %%ab066b3292d8ab61ef3b5c77169cdd19%%
+ </title>
+            <path></path>
+            <path></path>
+        </svg>
+    </div>
+</button>';
+        $root = DOMinator::read($html);
+        $pretty = $root->toInlinedHtml(false);
+        $expected = $html = '<button>
+    <div>
+        <svg>
+            <title>%%ab066b3292d8ab61ef3b5c77169cdd19%%</title>
+            <path></path>
+            <path></path>
+        </svg>
+    </div>
+</button>';
+        $this->assertEquals($expected, $pretty);
     }
 
     public function testToInlinedHtmlKeepsUnmatchedAndGlobalRules() {

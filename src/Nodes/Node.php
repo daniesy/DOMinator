@@ -61,6 +61,10 @@ class Node {
                 $html .= $this->doctype . $newline;
             }
             foreach ($this->children as $child) {
+                // Skip whitespace-only text nodes when pretty printing
+                if (!$minify && $child->isText && trim($child->innerText) === '') {
+                    continue;
+                }
                 $html .= $child->toHtml($minify, $minify ? 0 : $level);
                 if (!$minify) $html .= $newline;
             }
@@ -81,7 +85,13 @@ class Node {
             return $indent . '<![CDATA[' . $this->innerText . ']]>';
         }
         if ($this->isText) {
-            return $indent . htmlspecialchars_decode(htmlspecialchars($this->innerText));
+            // For text nodes, don't add indentation in pretty print mode
+            // If it's only whitespace and we're in pretty print mode, skip it
+            $text = htmlspecialchars_decode(htmlspecialchars($this->innerText));
+            if (!$minify && trim($text) === '') {
+                return '';
+            }
+            return $text;
         }
         $attr = '';
         foreach ($this->attributes as $k => $v) {
@@ -89,12 +99,26 @@ class Node {
         }
         $html .= $indent . "<{$this->tag}{$attr}>";
         if ($this->children->length) {
-            if (!$minify) $html .= $newline;
-            foreach ($this->children as $child) {
-                $html .= $child->toHtml($minify, $level + 1);
+            // Special handling for elements with only text content
+            if ($this->children->length === 1 && $this->children->item(0)?->isText) {
+                // For "title" tag in SVG, compress whitespace
+                if ($this->tag === 'title' && $this->parent && $this->parent->tag === 'svg') {
+                    $html .= trim(preg_replace('/\s+/', ' ', $this->children->item(0)->innerText));
+                } else {
+                    $html .= $this->children->item(0)->innerText;
+                }
+            } else {
                 if (!$minify) $html .= $newline;
+                foreach ($this->children as $child) {
+                    // Skip whitespace-only text nodes when pretty printing
+                    if (!$minify && $child->isText && trim($child->innerText) === '') {
+                        continue;
+                    }
+                    $html .= $child->toHtml($minify, $level + 1);
+                    if (!$minify) $html .= $newline;
+                }
+                $html .= $minify ? '' : $indent;
             }
-            $html .= $minify ? '' : $indent;
         } else {
             $html .= htmlspecialchars($this->innerText);
         }

@@ -61,12 +61,14 @@ trait ModifiesNode {
     }
 
     private function collectTextNodes(Node $node, array &$result): void {
-        if ($node->isText) {
+        if ($node && $node->isText) {
             $result[] = $node;
         }
-        if (isset($node->children)) {
+        if ($node && isset($node->children)) {
             foreach ($node->children as $child) {
-                $this->collectTextNodes($child, $result);
+                if ($child) {
+                    $this->collectTextNodes($child, $result);
+                }
             }
         }
     }
@@ -82,12 +84,14 @@ trait ModifiesNode {
     }
 
     private function collectCommentNodes(Node $node, array &$result): void {
-        if (isset($node->isComment) && $node->isComment) {
+        if ($node && isset($node->isComment) && $node->isComment) {
             $result[] = $node;
         }
-        if (isset($node->children)) {
+        if ($node && isset($node->children)) {
             foreach ($node->children as $child) {
-                $this->collectCommentNodes($child, $result);
+                if ($child) {
+                    $this->collectCommentNodes($child, $result);
+                }
             }
         }
     }
