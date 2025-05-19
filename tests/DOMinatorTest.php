@@ -406,4 +406,41 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('b', $textNodes[1]->parent->tag);
         $this->assertEquals('i', $textNodes[3]->parent->tag);
     }
+
+    public function testGetAllCommentNodesAndRemove() {
+        $html = '<div><!-- comment1 --><span>ok</span><!-- comment2 --></div>';
+        $root = DOMinator::parse($html);
+        $comments = $root->getAllCommentNodes();
+        $this->assertCount(2, $comments);
+        $this->assertEquals(' comment1 ', $comments[0]->innerText);
+        $this->assertEquals(' comment2 ', $comments[1]->innerText);
+        // Remove all comments
+        foreach ($comments as $comment) {
+            $comment->remove();
+        }
+        $htmlOut = $root->toHtml();
+        $this->assertStringNotContainsString('<!-- comment1 -->', $htmlOut);
+        $this->assertStringNotContainsString('<!-- comment2 -->', $htmlOut);
+        $this->assertStringContainsString('<span>ok</span>', $htmlOut);
+    }
+
+    public function testGetAllCommentNodesAndRemoveWithContent() {
+        $html = '<div>foo <!-- comment1 -->bar<span>ok</span><!-- comment2 -->baz</div>';
+        $root = DOMinator::parse($html);
+        $comments = $root->getAllCommentNodes();
+        $this->assertCount(2, $comments);
+        // Remove all comments and their content from adjacent text nodes
+        foreach ($comments as $comment) {
+            $comment->remove(true);
+        }
+        $htmlOut = $root->toHtml();
+        $this->assertStringNotContainsString('<!-- comment1 -->', $htmlOut);
+        $this->assertStringNotContainsString('<!-- comment2 -->', $htmlOut);
+        $this->assertStringContainsString('<span>ok</span>', $htmlOut);
+        $this->assertStringContainsString('foo bar', $htmlOut); // 'bar' should remain if not part of comment
+        $this->assertStringContainsString('baz', $htmlOut);
+        // The text nodes adjacent to comments should have the comment content removed
+        $this->assertStringNotContainsString('comment1', $htmlOut);
+        $this->assertStringNotContainsString('comment2', $htmlOut);
+    }
 }
