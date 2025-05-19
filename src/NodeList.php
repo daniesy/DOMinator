@@ -6,6 +6,7 @@ use Countable;
 use Iterator;
 use IteratorAggregate;
 use ArrayIterator;
+use Daniesy\DOMinator\Nodes\Node;
 
 class NodeList implements IteratorAggregate, Countable {
     /**

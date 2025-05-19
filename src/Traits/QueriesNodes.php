@@ -2,7 +2,7 @@
 
 namespace Daniesy\DOMinator\Traits;
 
-use Daniesy\DOMinator\Node;
+use Daniesy\DOMinator\Nodes\Node;
 use Daniesy\DOMinator\NodeList;
 
 trait QueriesNodes {

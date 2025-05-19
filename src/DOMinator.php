@@ -1,6 +1,9 @@
 <?php
 namespace Daniesy\DOMinator;
-require_once __DIR__ . '/Node.php';
+
+use Daniesy\DOMinator\Nodes\Node;
+use Daniesy\DOMinator\Nodes\TextNode;
+use Daniesy\DOMinator\Nodes\CommentNode;
 
 class DOMinator {
     private static array $voidElements = [
@@ -25,7 +28,7 @@ class DOMinator {
             $substr = substr($html, $offset);
             // Comment
             if (preg_match('/^<!--(.*?)-->/s', $substr, $m)) {
-                $node = new Node('', [], false, $m[1], true);
+                $node = new CommentNode('', [], false, $m[1]);
                 end($stack)->appendChild($node);
                 $offset += strlen($m[0]);
             }
@@ -39,7 +42,7 @@ class DOMinator {
             elseif (preg_match('/^<(script|style)([^>]*)>([\s\S]*?)<\/\1>/i', $substr, $m)) {
                 $attrs = self::parseAttributes($m[2]);
                 $node = new Node(strtolower($m[1]), $attrs);
-                $textNode = new Node('', [], true, $m[3]);
+                $textNode = new TextNode('', [], true, $m[3]);
                 $node->appendChild($textNode);
                 end($stack)->appendChild($node);
                 $offset += strlen($m[0]);
@@ -88,7 +91,7 @@ class DOMinator {
                     // Collapse all whitespace (space, tab, newline, etc) to a single space
                     $text = preg_replace('/\s+/', ' ', $text);
                 }
-                $textNode = new Node('', [], true, html_entity_decode($text));
+                $textNode = new TextNode('', [], true, html_entity_decode($text));
                 end($stack)->appendChild($textNode);
                 $offset += strlen($m[1]);
             } else {

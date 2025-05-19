@@ -1,10 +1,10 @@
 <?php
-namespace Daniesy\DOMinator;
+namespace Daniesy\DOMinator\Nodes;
 
 use Daniesy\DOMinator\Traits\HandlesAttributes;
 use Daniesy\DOMinator\Traits\QueriesNodes;
 use Daniesy\DOMinator\Traits\ModifiesNode;
-use Daniesy\DOMinator\Traits\ReadsNode;
+use Daniesy\DOMinator\NodeList;
 
 // Represents a node in the HTML tree (element or text)
 class Node {
@@ -29,7 +29,7 @@ class Node {
     public function appendChild($child): void
     {
         $child->parent = $this;
-        $this->children->add($child);;
+        $this->children->add($child);
     }
 
     public function getInnerText(): string

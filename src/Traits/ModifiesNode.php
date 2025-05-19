@@ -2,7 +2,9 @@
 
 namespace Daniesy\DOMinator\Traits;
 
-use Daniesy\DOMinator\Node;
+use Daniesy\DOMinator\Nodes\Node;
+use Daniesy\DOMinator\Nodes\CommentNode;
+use Daniesy\DOMinator\Nodes\TextNode;
 use Daniesy\DOMinator\NodeList;
 
 trait ModifiesNode {
@@ -20,28 +22,12 @@ trait ModifiesNode {
      * @param bool $removeContent If true, also remove the comment's content from adjacent text nodes.
      */
     public function remove(bool $removeContent = false): void {
+        if ($this instanceof CommentNode) {
+            // Call CommentNode's own remove, not parent::remove
+            CommentNode::advancedRemove($this, $removeContent);
+            return;
+        }
         if ($this->parent) {
-            // Remove comment content from adjacent text nodes if requested
-            if ($removeContent && isset($this->isComment) && $this->isComment) {
-                $siblings = $this->parent->children;
-                // Convert NodeList to array for index lookup
-                if ($siblings instanceof NodeList) {
-                    $siblingsArr = iterator_to_array($siblings);
-                } else {
-                    $siblingsArr = $siblings;
-                }
-                $idx = array_search($this, $siblingsArr, true);
-                if ($idx !== false) {
-                    // Remove comment content from previous text node
-                    if ($idx > 0 && isset($siblingsArr[$idx-1]) && isset($siblingsArr[$idx-1]->isText) && $siblingsArr[$idx-1]->isText) {
-                        $siblingsArr[$idx-1]->innerText = str_replace($this->innerText, '', $siblingsArr[$idx-1]->innerText);
-                    }
-                    // Remove comment content from next text node
-                    if (isset($siblingsArr[$idx+1]) && isset($siblingsArr[$idx+1]->isText) && $siblingsArr[$idx+1]->isText) {
-                        $siblingsArr[$idx+1]->innerText = str_replace($this->innerText, '', $siblingsArr[$idx+1]->innerText);
-                    }
-                }
-            }
             // Remove this node from parent's children
             if (is_object($this->parent->children) && method_exists($this->parent->children, 'remove')) {
                 $this->parent->children->remove($this);
@@ -59,14 +45,15 @@ trait ModifiesNode {
      * Sets the inner text of this node.
      */
     public function setInnerText(string $text): void {
+        // Always set innerText for text nodes
         if ($this->isText) {
             $this->innerText = $text;
-        } else {
-            $this->children = new NodeList;
-            if ($text !== '') {
-                $textNode = new Node('', [], true, $text);
-                $this->appendChild($textNode);
-            }
+            return;
+        }
+        $this->children = new NodeList;
+        if ($text !== '') {
+            $textNode = new TextNode('', [], true, $text);
+            $this->appendChild($textNode);
         }
     }
 

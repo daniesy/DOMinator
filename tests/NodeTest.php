@@ -1,6 +1,6 @@
 <?php
 use PHPUnit\Framework\TestCase;
-use Daniesy\DOMinator\Node;
+use Daniesy\DOMinator\Nodes\Node;
 
 class NodeTest extends TestCase {
     public function testTextNode() {
