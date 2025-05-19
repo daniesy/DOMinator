@@ -15,6 +15,9 @@ A robust, fast, and fully-featured HTML5 parser and query engine for PHP. Parse,
 - **Node manipulation**: Add, remove, set attributes, change text, and more (`Node`).
 - **Performance**: Optimized for large and deeply nested documents.
 - **Comprehensive tests**: Includes extensive tests for all features and edge cases.
+- **Robust CSS parser**: Parses CSS rules and at-rules (including nested and simple at-rules like `@media` and `@font-face`).
+- **CSS inlining**: Optionally inlines CSS styles as `style` attributes when exporting HTML (`Node::toInlinedHtml`).
+- **Pretty-print and minify HTML**: Export HTML as minified (default) or pretty-printed (indented, human-readable) with `Node::toHtml(false)`.
 
 ## Installation
 
@@ -96,6 +99,25 @@ $node->innerText = 'Updated text';
 $node->remove(); // Remove from parent
 ```
 
+### CSS Parsing and Selector Matching
+
+```php
+use Daniesy\DOMinator\CssParser;
+
+$css = '@media (max-width:600px) { body { background: #fff; } }\n@font-face { font-family: test; src: url(test.woff); }\ndiv.foo#bar { color: green; }';
+$rules = CssParser::parse($css);
+// $rules[0]['type'] === 'at' for @media, $rules[1]['type'] === 'at' for @font-face, $rules[2]['type'] === 'rule' for div.foo#bar
+
+// Selector matching:
+use Daniesy\DOMinator\Nodes\Node;
+$node = new Node('div', ['class' => 'foo bar', 'id' => 'bar']);
+CssParser::matches('div.foo#bar', $node); // true
+CssParser::matches('.baz', $node); // false
+```
+
+- `CssParser::parse($css)` parses a CSS string into an array of rules and at-rules (including nested and simple at-rules).
+- `CssParser::matches($selector, $node)` checks if a node matches a CSS selector (supports tag, class, id, compound, and descendant selectors).
+
 ### Exporting Back to HTML
 
 ```php
@@ -103,6 +125,9 @@ $node->remove(); // Remove from parent
 $html = $root->toHtml();
 // Pretty-printed (indented, human-readable)
 $prettyHtml = $root->toHtml(false);
+// Inline CSS styles (simple selectors only)
+$inlinedHtml = $root->toInlinedHtml();
+$prettyInlinedHtml = $root->toInlinedHtml(false);
 ```
 
 ### Handling Namespaces
@@ -127,6 +152,11 @@ echo $svg->tag;       // 'rect'
 - `Node::toHtml($minify = true)`
   - If `$minify` is `false`, outputs pretty-printed HTML with indentation and newlines.
   - If `$minify` is `true` (default), outputs minified HTML.
+- `Node::toInlinedHtml($minify = true)`
+  - Inlines simple CSS rules from <style> tags as inline `style` attributes.
+  - Supports only tag, class, and id selectors (no combinators or advanced selectors).
+  - Removes <style> tags from the output.
+  - Use `$minify = false` for pretty-printed output.
 
 ## API Reference
 
@@ -151,6 +181,7 @@ echo $svg->tag;       // 'rect'
   - `removeAttribute($name)`: Remove attribute
   - `remove()`: Remove node from parent
   - `toHtml()`: Export node and children as HTML
+  - `toInlinedHtml($minify = true)`: Export HTML with inlined CSS styles
   - `querySelectorAll($selector)`: Returns a NodeList of matching nodes (CSS selector)
   - `querySelector($selector)`: Returns the first matching node or null
   - `getElementsByTagName($tag)`: Returns a NodeList of nodes with the given tag name (case-insensitive)

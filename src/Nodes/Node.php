@@ -5,6 +5,7 @@ use Daniesy\DOMinator\Traits\HandlesAttributes;
 use Daniesy\DOMinator\Traits\QueriesNodes;
 use Daniesy\DOMinator\Traits\ModifiesNode;
 use Daniesy\DOMinator\NodeList;
+use Daniesy\DOMinator\CssParser;
 
 // Represents a node in the HTML tree (element or text)
 /**
@@ -99,5 +100,126 @@ class Node {
         }
         $html .= "</{$this->tag}>";
         return $html;
+    }
+
+    public function toInlinedHtml(bool $minify = true): string
+    {
+        $styleNodes = [];
+        $allCssRules = [];
+        // Collect all <style> nodes and parse their CSS
+        $this->collectStyleNodes($styleNodes);
+        foreach ($styleNodes as $styleNode) {
+            $css = '';
+            foreach ($styleNode->children as $child) {
+                $css .= $child->innerText;
+            }
+            $parsed = CssParser::parse($css);
+            $allCssRules[] = [ 'node' => $styleNode, 'rules' => $parsed ];
+        }
+        // Map: selector => [rule, props, raw, styleNode]
+        $selectorMap = [];
+        foreach ($allCssRules as $block) {
+            foreach ($block['rules'] as $rule) {
+                if ($rule['type'] === 'rule') {
+                    $selectorMap[] = [
+                        'selector' => $rule['selector'],
+                        'props' => $rule['props'],
+                        'raw' => $rule['raw'],
+                        'styleNode' => $block['node'],
+                    ];
+                }
+            }
+        }
+        // Inline styles and track which rules were inlined
+        $inlined = [];
+        $this->applyAdvancedInlineStyles($selectorMap, $inlined);
+        // Deep clone, removing only inlined rules from <style> tags
+        $cloned = $this->deepCloneWithAdvancedStyleRemoval($allCssRules, $inlined);
+        return $cloned->toHtml($minify);
+    }
+
+    private function collectStyleNodes(array &$styleNodes)
+    {
+        if ($this->tag === 'style') {
+            $styleNodes[] = $this;
+        }
+        foreach ($this->children as $child) {
+            $child->collectStyleNodes($styleNodes);
+        }
+    }
+
+    // Applies all matching rules to this node and children, tracks inlined rules
+    private function applyAdvancedInlineStyles(array $selectorMap, array &$inlined)
+    {
+        if ($this->tag && !$this->isText && !$this->isComment && !$this->isCdata) {
+            $matchedProps = [];
+            foreach ($selectorMap as $entry) {
+                if (CssParser::matches($entry['selector'], $this)) {
+                    foreach ($entry['props'] as $k => $v) {
+                        $matchedProps[$k] = $v;
+                    }
+                    $inlined[$entry['styleNode']->id ?? spl_object_id($entry['styleNode'])][$entry['raw']] = true;
+                }
+            }
+            if ($matchedProps) {
+                $this->attributes['style'] = '';
+                foreach ($matchedProps as $k => $v) {
+                    $this->attributes['style'] .= $k . ': ' . $v . ';';
+                }
+            }
+        }
+        foreach ($this->children as $child) {
+            $child->applyAdvancedInlineStyles($selectorMap, $inlined);
+        }
+    }
+
+    // Deep clone, but for <style> nodes, remove only rules that were actually inlined
+    private function deepCloneWithAdvancedStyleRemoval(array $allCssRules, array $inlined): self|null
+    {
+        if ($this->tag === 'style') {
+            $css = '';
+            foreach ($this->children as $child) {
+                $css .= $child->innerText;
+            }
+            $parsed = CssParser::parse($css);
+            $kept = [];
+            foreach ($parsed as $rule) {
+                if ($rule['type'] === 'at') {
+                    $kept[] = $rule['raw'];
+                } elseif ($rule['type'] === 'rule') {
+                    $sid = $this->id ?? spl_object_id($this);
+                    if (!isset($inlined[$sid][$rule['raw']])) {
+                        $kept[] = $rule['raw'];
+                    }
+                }
+            }
+            $newCss = implode(' ', $kept);
+            if ($newCss === '') {
+                return null;
+            }
+            $clone = new self('style', $this->attributes);
+            if ($newCss !== '') {
+                $clone->appendChild(new self('', [], true, $newCss));
+            }
+            return $clone;
+        }
+        $clone = new self(
+            $this->tag,
+            $this->attributes,
+            $this->isText,
+            $this->isText ? $this->innerText : '',
+            $this->isComment,
+            $this->isCdata,
+            $this->namespace
+        );
+        $clone->doctype = $this->doctype ?? '';
+        $clone->xmlDeclaration = $this->xmlDeclaration ?? '';
+        foreach ($this->children as $child) {
+            $clonedChild = $child->deepCloneWithAdvancedStyleRemoval($allCssRules, $inlined);
+            if ($clonedChild !== null) {
+                $clone->appendChild($clonedChild);
+            }
+        }
+        return $clone;
     }
 }

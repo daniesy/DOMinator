@@ -572,4 +572,72 @@ class DOMinatorTest extends TestCase {
         $expected = $xmlDecl . "\n" . $doctype . "\n<html>\n    <body>\n        <div>\n            <span>\n                A\n            </span>\n        </div>\n    </body>\n</html>";
         $this->assertEquals($expected, trim($pretty));
     }
+
+    public function testToInlinedHtmlSimpleSelectors() {
+        $html = '<style>div { color: red; } .foo { font-weight: bold; } #bar { text-align: center; }</style>'
+            .'<div class="foo" id="bar">A</div><div>B</div>';
+        $root = DOMinator::read($html);
+        $inlined = $root->toInlinedHtml();
+        $this->assertStringNotContainsString('<style>', $inlined);
+        $this->assertStringContainsString('<div class="foo" id="bar" style="color: red;font-weight: bold;text-align: center;">A</div>', $inlined);
+        $this->assertStringContainsString('<div style="color: red;">B</div>', $inlined);
+    }
+
+    public function testToInlinedHtmlPrettyPrint() {
+        $html = '<style>.x { color: blue; }</style><span class="x">T</span>';
+        $root = DOMinator::read($html);
+        $pretty = $root->toInlinedHtml(false);
+        $expected = "<span class=\"x\" style=\"color: blue;\">\n    T\n</span>";
+        $this->assertEquals($expected, trim($pretty));
+        $this->assertStringNotContainsString('<style>', $pretty);
+    }
+
+    public function testToInlinedHtmlKeepsUnmatchedAndGlobalRules() {
+        $html = '<style>div { color: red; } .foo { font-weight: bold; } @media (max-width:600px) { body { background: #fff; } } .unused { color: green; }</style>'
+            .'<div class="foo">A</div>';
+        $root = DOMinator::read($html);
+        $inlined = $root->toInlinedHtml();
+        // Inlined rules should be removed
+        $this->assertStringNotContainsString('div { color: red; }', $inlined);
+        $this->assertStringNotContainsString('.foo { font-weight: bold; }', $inlined);
+        // Unmatched and global rules should be kept
+        $this->assertStringContainsString('@media (max-width:600px)', $inlined);
+        $this->assertStringContainsString('.unused { color: green; }', $inlined);
+        $this->assertStringContainsString('<style>', $inlined);
+        // The inlined style should be present on the element
+        $this->assertStringContainsString('<div class="foo" style="color: red;font-weight: bold;">A</div>', $inlined);
+    }
+
+    public function testToInlinedHtmlRemovesStyleTagIfAllRulesInlined() {
+        $html = '<style>div { color: red; } .foo { font-weight: bold; }</style>'
+            .'<div class="foo">A</div><div>B</div>';
+        $root = DOMinator::read($html);
+        $inlined = $root->toInlinedHtml();
+        // All rules are inlined, so <style> should be removed
+        $this->assertStringNotContainsString('<style>', $inlined);
+        $this->assertStringContainsString('<div class="foo" style="color: red;font-weight: bold;">A</div>', $inlined);
+        $this->assertStringContainsString('<div style="color: red;">B</div>', $inlined);
+    }
+
+    public function testToInlinedHtmlKeepsStyleTagWithOnlyGlobalRules() {
+        $html = '<style>@media (max-width:600px) { body { background: #fff; } } @font-face { font-family: test; src: url(test.woff); }</style>'
+            .'<div>A</div>';
+        $root = DOMinator::read($html);
+        $inlined = $root->toInlinedHtml();
+        // No rules are inlined, so <style> should be kept as-is
+        $this->assertStringContainsString('<style>', $inlined);
+        $this->assertStringContainsString('@media (max-width:600px)', $inlined);
+        $this->assertStringContainsString('@font-face', $inlined);
+        $this->assertStringContainsString('<div>A</div>', $inlined);
+    }
+
+    public function testToInlinedHtmlKeepsStyleTagWithUnusedSelector() {
+        $html = '<style>.unused { color: green; }</style><div>B</div>';
+        $root = DOMinator::read($html);
+        $inlined = $root->toInlinedHtml();
+        // .unused is not matched, so <style> should be kept
+        $this->assertStringContainsString('<style>', $inlined);
+        $this->assertStringContainsString('.unused { color: green; }', $inlined);
+        $this->assertStringContainsString('<div>B</div>', $inlined);
+    }
 }
