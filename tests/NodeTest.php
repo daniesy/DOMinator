@@ -172,4 +172,15 @@ class NodeTest extends TestCase {
         $this->assertSame($parent, $e->parent);
         $this->assertSame($parent, $f->parent);
     }
+
+    public function testQuerySelectorAllAttributePresence() {
+        $html = '<input placeholder="x"><input><input placeholder="y">';
+        $root = \Daniesy\DOMinator\DOMinator::read($html);
+        $withPlaceholder = $root->querySelectorAll('[placeholder]');
+        $this->assertCount(2, $withPlaceholder);
+        $this->assertEquals('input', $withPlaceholder->item(0)->tag);
+        $this->assertEquals('input', $withPlaceholder->item(1)->tag);
+        $this->assertEquals('x', $withPlaceholder->item(0)->attributes['placeholder']);
+        $this->assertEquals('y', $withPlaceholder->item(1)->attributes['placeholder']);
+    }
 }

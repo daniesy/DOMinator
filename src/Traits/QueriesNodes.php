@@ -84,6 +84,10 @@ trait QueriesNodes {
         if (preg_match('/^\[([a-zA-Z0-9\-:]+)\*=["\'`]?([^"]*)["\'`]?\]$/', $selector, $m)) {
             return isset($node->attributes[$m[1]]) && strpos($node->attributes[$m[1]], $m[2]) !== false;
         }
+        // [attr] attribute presence
+        if (preg_match('/^\[([a-zA-Z0-9\-:]+)\]$/', $selector, $m)) {
+            return isset($node->attributes[$m[1]]);
+        }
         return false;
     }
 }

@@ -56,6 +56,8 @@ $adminNodes = $root->querySelectorAll('[data-role="admin"]');
 $adminWordNodes = $root->querySelectorAll('[data-role~="admin"]');
 // Substring match
 $adminSubstringNodes = $root->querySelectorAll('[data-role*="admin"]');
+// Attribute presence
+$withPlaceholder = $root->querySelectorAll('[placeholder]');
 
 // Access by index using item() method
 echo $nodes->item(0)->innerText;
