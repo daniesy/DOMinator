@@ -17,6 +17,7 @@ class Node {
     public NodeList $children;
     public ?Node $parent = null;
     public string $doctype = '';
+    public string $xmlDeclaration = '';
 
     public function __construct(
         public string $tag = '',
@@ -50,6 +51,9 @@ class Node {
         // Special handling: if this is the artificial root node, only export its children
         if ($this->tag === 'root') {
             $html = '';
+            if (isset($this->xmlDeclaration) && $this->xmlDeclaration) {
+                $html .= $this->xmlDeclaration;
+            }
             if (isset($this->doctype)) {
                 $html .= $this->doctype;
             }
@@ -58,8 +62,11 @@ class Node {
             }
             return $html;
         }
-        // If this is the <html> node and has a doctype, prepend it
+        // If this is the <html> node and has a doctype or xmlDeclaration, prepend them
         $html = '';
+        if (isset($this->xmlDeclaration) && $this->xmlDeclaration) {
+            $html .= $this->xmlDeclaration;
+        }
         if ($this->tag === 'html' && isset($this->doctype)) {
             $html .= $this->doctype;
         }

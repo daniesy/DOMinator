@@ -14,12 +14,18 @@ class DOMinator {
 
     public static function read(string $html, bool $normalizeWhitespace = false): Node {
         $html = trim($html);
+        $xmlDeclaration = '';
+        if (preg_match('/^<\?xml[^>]*\?>/i', $html, $m)) {
+            $xmlDeclaration = $m[0];
+            $html = ltrim(substr($html, strlen($m[0])));
+        }
         $doctype = '';
         if (preg_match('/^<!DOCTYPE[^>]*>/i', $html, $m)) {
             $doctype = $m[0];
             $html = ltrim(substr($html, strlen($m[0])));
         }
         $root = new Node('root');
+        $root->xmlDeclaration = $xmlDeclaration;
         $stack = [$root];
         $offset = 0;
         $len = strlen($html);
@@ -108,9 +114,11 @@ class DOMinator {
         if (count($root->children) === 1 && $root->children->item(0)->tag === 'html') {
             $htmlNode = $root->children->item(0);
             $htmlNode->doctype = $doctype;
+            $htmlNode->xmlDeclaration = $xmlDeclaration;
             return $htmlNode;
         }
         $root->doctype = $doctype;
+        $root->xmlDeclaration = $xmlDeclaration;
         return $root;
     }
 

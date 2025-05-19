@@ -5,6 +5,7 @@ A robust, fast, and fully-featured HTML5 parser and query engine for PHP. Parse,
 ## Features
 
 - **Full HTML5 parsing**: Handles all standard HTML5 elements, void/self-closing tags, comments, CDATA, script/style content, and multiple doctype variants.
+- **XML declaration support**: Preserves and exports XML declarations (e.g., `<?xml version="1.0" encoding="utf-8"?>`) at the start of the document.
 - **Error recovery**: Gracefully parses malformed or broken HTML, just like browsers do.
 - **Entity decoding**: Decodes HTML entities in text and attributes.
 - **Whitespace normalization**: Optionally normalizes whitespace in text nodes.
@@ -32,7 +33,7 @@ Or include the `src/` files directly in your project.
 ```php
 use Daniesy\DOMinator\DOMinator;
 
-$html = '<div id="main"><p>Hello <b>World</b></p></div>';
+$html = '<?xml version="1.0" encoding="utf-8"?>\n<div id="main"><p>Hello <b>World</b></p></div>';
 $root = DOMinator::read($html);
 ```
 
@@ -98,7 +99,7 @@ $node->remove(); // Remove from parent
 ### Exporting Back to HTML
 
 ```php
-$html = $root->toHtml();
+$html = $root->toHtml(); // Will include the XML declaration if present
 ```
 
 ### Handling Namespaces
@@ -120,6 +121,7 @@ echo $svg->tag;       // 'rect'
 
 - `DOMinator::read($html, $normalizeWhitespace = false)`
   - Set `$normalizeWhitespace` to `true` to collapse whitespace in text nodes.
+  - Supports input with an XML declaration (e.g., `<?xml ...?>`).
 
 ## API Reference
 
@@ -138,6 +140,7 @@ echo $svg->tag;       // 'rect'
   - `innerText`: Text content (for text, comment, or CDATA nodes)
   - `isComment`, `isCdata`: Node type flags
   - `parent`: Parent node
+  - `xmlDeclaration`: XML declaration string if present (e.g., `<?xml version="1.0"?>`)
 - Methods:
   - `setAttribute($name, $value)`: Set or update attribute
   - `removeAttribute($name)`: Remove attribute

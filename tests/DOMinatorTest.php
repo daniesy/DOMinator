@@ -521,4 +521,34 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('C', $nodes->item(2)->innerText);
     }
 
+    public function testXmlDeclarationPreserved() {
+        $xmls = [
+            '<?xml version="1.0"?>',
+            '<?xml version="1.0" encoding="utf-8"?>',
+            '<?xml encoding="utf-8"?>',
+            '<?xml version="1.1" encoding="ISO-8859-1" standalone="yes"?>',
+        ];
+        foreach ($xmls as $xmlDecl) {
+            $html = $xmlDecl . '<root><child>Text</child></root>';
+            $root = DOMinator::read($html);
+            $this->assertEquals($xmlDecl, $root->xmlDeclaration);
+            $exported = $root->toHtml();
+            $this->assertStringStartsWith($xmlDecl, $exported);
+            $this->assertStringContainsString('<child>Text</child>', $exported);
+        }
+    }
+
+    public function testXmlDeclarationWithDoctype() {
+        $xmlDecl = '<?xml version="1.0" encoding="utf-8"?>';
+        $doctype = '<!DOCTYPE html>';
+        $html = $xmlDecl . $doctype . '<html><body>Test</body></html>';
+        $root = DOMinator::read($html);
+        $this->assertEquals($xmlDecl, $root->xmlDeclaration);
+        $this->assertEquals($doctype, $root->doctype);
+        $exported = $root->toHtml();
+        $this->assertStringStartsWith($xmlDecl, $exported);
+        $this->assertStringContainsString($doctype, $exported);
+        $this->assertStringContainsString('<body>Test</body>', $exported);
+    }
+
 }
