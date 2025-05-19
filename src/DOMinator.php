@@ -4,16 +4,15 @@ namespace Daniesy\DOMinator;
 use Daniesy\DOMinator\Nodes\Node;
 use Daniesy\DOMinator\Nodes\TextNode;
 use Daniesy\DOMinator\Nodes\CommentNode;
+use Daniesy\DOMinator\Nodes\ScriptNode;
+use Daniesy\DOMinator\Nodes\StyleNode;
 
 class DOMinator {
     private static array $voidElements = [
         'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr',
     ];
 
-    // No instance properties to promote; all methods are static.
-    // No changes needed for constructor property promotion.
-
-    public static function parse(string $html, bool $normalizeWhitespace = false): Node {
+    public static function read(string $html, bool $normalizeWhitespace = false): Node {
         $html = trim($html);
         $doctype = '';
         if (preg_match('/^<!DOCTYPE[^>]*>/i', $html, $m)) {
@@ -39,11 +38,15 @@ class DOMinator {
                 $offset += strlen($m[0]);
             }
             // Script/style raw content
-            elseif (preg_match('/^<(script|style)([^>]*)>([\s\S]*?)<\/\1>/i', $substr, $m)) {
+            elseif (preg_match('/^<(script)([^>]*)>([\s\S]*?)<\/script>/i', $substr, $m)) {
                 $attrs = self::parseAttributes($m[2]);
-                $node = new Node(strtolower($m[1]), $attrs);
-                $textNode = new TextNode('', [], true, $m[3]);
-                $node->appendChild($textNode);
+                $node = new ScriptNode($attrs, $m[3]);
+                end($stack)->appendChild($node);
+                $offset += strlen($m[0]);
+            }
+            elseif (preg_match('/^<(style)([^>]*)>([\s\S]*?)<\/style>/i', $substr, $m)) {
+                $attrs = self::parseAttributes($m[2]);
+                $node = new StyleNode($attrs, $m[3]);
                 end($stack)->appendChild($node);
                 $offset += strlen($m[0]);
             }
@@ -119,7 +122,7 @@ class DOMinator {
             $inner = $m[3];
             $attrs = self::parseAttributes($attrStr);
             $node = new Node($tag, $attrs);
-            $childrenRoot = self::parse($inner);
+            $childrenRoot = self::read($inner);
             foreach ($childrenRoot->children as $child) {
                 $node->appendChild($child);
             }

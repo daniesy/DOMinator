@@ -33,7 +33,7 @@ Or include the `src/` files directly in your project.
 use Daniesy\DOMinator\DOMinator;
 
 $html = '<div id="main"><p>Hello <b>World</b></p></div>';
-$root = DOMinator::parse($html);
+$root = DOMinator::read($html);
 ```
 
 ### Traversing the DOM
@@ -93,7 +93,7 @@ $html = $root->toHtml();
 
 ```php
 $html = '<svg:rect width="100" height="100"/>';
-$root = DOMinator::parse($html);
+$root = DOMinator::read($html);
 $svg = $root->children->item(0); // Direct access to children array is still available
 echo $svg->namespace; // 'svg'
 echo $svg->tag;       // 'rect'
@@ -106,14 +106,14 @@ echo $svg->tag;       // 'rect'
 
 ### Parsing Options
 
-- `DOMinator::parse($html, $normalizeWhitespace = false)`
+- `DOMinator::read($html, $normalizeWhitespace = false)`
   - Set `$normalizeWhitespace` to `true` to collapse whitespace in text nodes.
 
 ## API Reference
 
 ### `DOMinator`
 
-- `DOMinator::parse(string $html, bool $normalizeWhitespace = false): HtmlNode`
+- `DOMinator::read(string $html, bool $normalizeWhitespace = false): HtmlNode`
   - Parses HTML and returns the root node.
 
 ### `HtmlNode`

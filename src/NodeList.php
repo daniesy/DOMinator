@@ -63,6 +63,24 @@ class NodeList implements IteratorAggregate, Countable {
     }
 
     /**
+     * Returns the first node in the list, or null if the list is empty.
+     *
+     * @return Node|null The first node in the list, or null if the list is empty
+     */
+    public function first(): ?Node {
+        return $this->length > 0 ? $this->nodes[0] : null;
+    }
+
+    /**
+     * Returns the last node in the list, or null if the list is empty.
+     *
+     * @return Node|null The last node in the list, or null if the list is empty
+     */
+    public function last(): ?Node {
+        return $this->length > 0 ? $this->nodes[$this->length - 1] : null;
+    }
+
+    /**
      * Returns the number of nodes in the list.
      *
      * @return int The number of nodes in the list

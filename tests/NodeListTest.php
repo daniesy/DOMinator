@@ -9,7 +9,7 @@ class NodeListTest extends TestCase {
 
     protected function setUp(): void {
         $this->html = '<div><span>A</span><span>B</span><p>C</p></div>';
-        $this->root = DOMinator::parse($this->html);
+        $this->root = DOMinator::read($this->html);
     }
 
     public function testNodeListLength() {

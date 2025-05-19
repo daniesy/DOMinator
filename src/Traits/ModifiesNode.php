@@ -17,31 +17,6 @@ trait ModifiesNode {
     }
 
     /**
-     * Removes this node from its parent.
-     * If this node is a comment and $removeContent is true, also removes the comment's innerText from the parent text nodes.
-     * @param bool $removeContent If true, also remove the comment's content from adjacent text nodes.
-     */
-    public function remove(bool $removeContent = false): void {
-        if ($this instanceof CommentNode) {
-            // Call CommentNode's own remove, not parent::remove
-            CommentNode::advancedRemove($this, $removeContent);
-            return;
-        }
-        if ($this->parent) {
-            // Remove this node from parent's children
-            if (is_object($this->parent->children) && method_exists($this->parent->children, 'remove')) {
-                $this->parent->children->remove($this);
-            } elseif (is_array($this->parent->children)) {
-                $this->parent->children = array_filter(
-                    $this->parent->children,
-                    fn($c) => $c !== $this
-                );
-            }
-            $this->parent = null;
-        }
-    }
-
-    /**
      * Sets the inner text of this node.
      */
     public function setInnerText(string $text): void {
@@ -96,6 +71,24 @@ trait ModifiesNode {
             foreach ($node->children as $child) {
                 $this->collectCommentNodes($child, $result);
             }
+        }
+    }
+
+    /**
+     * Removes this node from its parent.
+     */
+    public function remove(): void {
+        if ($this->parent) {
+            // Remove this node from parent's children
+            if (is_object($this->parent->children) && method_exists($this->parent->children, 'remove')) {
+                $this->parent->children->remove($this);
+            } elseif (is_array($this->parent->children)) {
+                $this->parent->children = array_filter(
+                    $this->parent->children,
+                    fn($c) => $c !== $this
+                );
+            }
+            $this->parent = null;
         }
     }
 }

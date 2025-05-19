@@ -26,6 +26,13 @@ class Node {
         $this->children = new NodeList();
     }
 
+    public function __get($name) {
+        if ($name === 'innerText') {
+            return $this->getInnerText();
+        }
+        return $this->$name ?? null;
+    }
+
     public function appendChild($child): void
     {
         $child->parent = $this;
