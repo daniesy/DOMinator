@@ -99,7 +99,10 @@ $node->remove(); // Remove from parent
 ### Exporting Back to HTML
 
 ```php
-$html = $root->toHtml(); // Will include the XML declaration if present
+// Minified (default)
+$html = $root->toHtml();
+// Pretty-printed (indented, human-readable)
+$prettyHtml = $root->toHtml(false);
 ```
 
 ### Handling Namespaces
@@ -120,8 +123,10 @@ echo $svg->tag;       // 'rect'
 ### Parsing Options
 
 - `DOMinator::read($html, $normalizeWhitespace = false)`
-  - Set `$normalizeWhitespace` to `true` to collapse whitespace in text nodes.
   - Supports input with an XML declaration (e.g., `<?xml ...?>`).
+- `Node::toHtml($minify = true)`
+  - If `$minify` is `false`, outputs pretty-printed HTML with indentation and newlines.
+  - If `$minify` is `true` (default), outputs minified HTML.
 
 ## API Reference
 

@@ -551,4 +551,25 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<body>Test</body>', $exported);
     }
 
+    public function testToHtmlPrettyPrint() {
+        $html = '<div><span>A</span><span>B</span></div>';
+        $root = DOMinator::read($html);
+        $pretty = $root->toHtml(false);
+        $expected = "<div>\n    <span>\n        A\n    </span>\n    <span>\n        B\n    </span>\n</div>";
+        $this->assertEquals($expected, trim($pretty));
+        // Minified output should not have newlines or indentation
+        $minified = $root->toHtml(true);
+        $this->assertStringNotContainsString("\n", $minified);
+        $this->assertStringNotContainsString("    ", $minified);
+    }
+
+    public function testToHtmlPrettyPrintWithXmlDeclarationAndDoctype() {
+        $xmlDecl = '<?xml version="1.0" encoding="utf-8"?>';
+        $doctype = '<!DOCTYPE html>';
+        $html = $xmlDecl . $doctype . '<html><body><div><span>A</span></div></body></html>';
+        $root = DOMinator::read($html);
+        $pretty = $root->toHtml(false);
+        $expected = $xmlDecl . "\n" . $doctype . "\n<html>\n    <body>\n        <div>\n            <span>\n                A\n            </span>\n        </div>\n    </body>\n</html>";
+        $this->assertEquals($expected, trim($pretty));
+    }
 }

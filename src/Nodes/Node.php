@@ -46,48 +46,54 @@ class Node {
         $this->$name = $value;
     }
     
-    public function toHtml(): string
+    public function toHtml(bool $minify = true, int $level = 0): string
     {
+        $indent = ($minify ? '' : str_repeat("    ", $level));
+        $newline = $minify ? '' : "\n";
         // Special handling: if this is the artificial root node, only export its children
         if ($this->tag === 'root') {
             $html = '';
             if (isset($this->xmlDeclaration) && $this->xmlDeclaration) {
-                $html .= $this->xmlDeclaration;
+                $html .= $this->xmlDeclaration . $newline;
             }
-            if (isset($this->doctype)) {
-                $html .= $this->doctype;
+            if (isset($this->doctype) && $this->doctype) {
+                $html .= $this->doctype . $newline;
             }
             foreach ($this->children as $child) {
-                $html .= $child->toHtml();
+                $html .= $child->toHtml($minify, $minify ? 0 : $level);
+                if (!$minify) $html .= $newline;
             }
-            return $html;
+            return $minify ? $html : rtrim($html, "\n");
         }
         // If this is the <html> node and has a doctype or xmlDeclaration, prepend them
         $html = '';
         if (isset($this->xmlDeclaration) && $this->xmlDeclaration) {
-            $html .= $this->xmlDeclaration;
+            $html .= $this->xmlDeclaration . $newline;
         }
-        if ($this->tag === 'html' && isset($this->doctype)) {
-            $html .= $this->doctype;
+        if ($this->tag === 'html' && isset($this->doctype) && $this->doctype) {
+            $html .= $this->doctype . $newline;
         }
         if ($this->isComment) {
-            return '<!--' . $this->innerText . '-->';
+            return $indent . '<!--' . $this->innerText . '-->';
         }
         if ($this->isCdata) {
-            return '<![CDATA[' . $this->innerText . ']]>';
+            return $indent . '<![CDATA[' . $this->innerText . ']]>';
         }
         if ($this->isText) {
-            return htmlspecialchars_decode(htmlspecialchars($this->innerText));
+            return $indent . htmlspecialchars_decode(htmlspecialchars($this->innerText));
         }
         $attr = '';
         foreach ($this->attributes as $k => $v) {
             $attr .= ' ' . $k . '="' . htmlspecialchars_decode(htmlspecialchars($v)) . '"';
         }
-        $html .= "<{$this->tag}{$attr}>";
+        $html .= $indent . "<{$this->tag}{$attr}>";
         if ($this->children->length) {
+            if (!$minify) $html .= $newline;
             foreach ($this->children as $child) {
-                $html .= $child->toHtml();
+                $html .= $child->toHtml($minify, $level + 1);
+                if (!$minify) $html .= $newline;
             }
+            $html .= $minify ? '' : $indent;
         } else {
             $html .= htmlspecialchars($this->innerText);
         }
