@@ -58,6 +58,8 @@ $adminWordNodes = $root->querySelectorAll('[data-role~="admin"]');
 $adminSubstringNodes = $root->querySelectorAll('[data-role*="admin"]');
 // Attribute presence
 $withPlaceholder = $root->querySelectorAll('[placeholder]');
+// Comma-separated (OR) selectors
+$iconLinks = $root->querySelectorAll('link[rel="shortcut icon"], link[rel="icon"]');
 
 // Access by index using item() method
 echo $nodes->item(0)->innerText;

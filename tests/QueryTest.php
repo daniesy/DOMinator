@@ -184,4 +184,22 @@ class QueryTest extends TestCase {
         $this->assertEquals('x', $withPlaceholder->item(0)->attributes['placeholder']);
         $this->assertEquals('y', $withPlaceholder->item(1)->attributes['placeholder']);
     }
+
+
+    public function testQuerySelectorCommaSeparated() {
+        $html = '<head>'
+            .'<link rel="icon" href="favicon.ico">'
+            .'<link rel="stylesheet" href="style.css">'
+            .'<link rel="shortcut icon" href="shortcut.ico">'
+            .'</head>';
+        $root = DOMinator::read($html);
+        $iconLink = $root->querySelector('link[rel="shortcut icon"], link[rel="icon"]');
+        $this->assertNotNull($iconLink);
+        $this->assertEquals('icon', $iconLink->attributes['rel']);
+        $this->assertEquals('favicon.ico', $iconLink->attributes['href']);
+        $allIcons = $root->querySelectorAll('link[rel="shortcut icon"], link[rel="icon"]');
+        $this->assertCount(2, $allIcons);
+        $this->assertEquals('icon', $allIcons->item(0)->attributes['rel']);
+        $this->assertEquals('shortcut icon', $allIcons->item(1)->attributes['rel']);
+    }
 }
