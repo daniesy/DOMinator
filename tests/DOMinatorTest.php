@@ -383,4 +383,27 @@ class DOMinatorTest extends TestCase {
         }
         $this->assertLessThan(1, $duration, 'Parsing 100 attributes should be fast');
     }
+
+    public function testGetAllTextNodesAndModify() {
+        $html = '<div>Hello <b>World</b> and <i>Universe</i></div>';
+        $root = DOMinator::parse($html); // Assuming Node::parse exists, or use HtmlParser if needed
+        $textNodes = $root->getAllTextNodes();
+        $this->assertCount(4, $textNodes);
+        $this->assertEquals('Hello ', $textNodes[0]->innerText);
+        $this->assertEquals('World', $textNodes[1]->innerText);
+        $this->assertEquals(' and ', $textNodes[2]->innerText);
+        $this->assertEquals('Universe', $textNodes[3]->innerText);
+    
+        // Modify text nodes
+        $textNodes[0]->innerText = 'Hi ';
+        $textNodes[1]->innerText = 'Earth';
+        $textNodes[3]->innerText = 'Galaxy';
+        $htmlOut = $root->toHtml();
+        $this->assertStringContainsString('Hi <b>Earth</b> and <i>Galaxy</i>', $htmlOut);
+        $this->assertEquals('<div>Hi <b>Earth</b> and <i>Galaxy</i></div>', $htmlOut);
+
+        $this->assertEquals('div', $textNodes[0]->parent->tag);
+        $this->assertEquals('b', $textNodes[1]->parent->tag);
+        $this->assertEquals('i', $textNodes[3]->parent->tag);
+    }
 }

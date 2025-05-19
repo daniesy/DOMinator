@@ -38,4 +38,25 @@ trait ModifiesNode {
             }
         }
     }
+
+    /**
+     * Recursively collects all text nodes (for modification).
+     * @return Node[] Array of text nodes (isText === true)
+     */
+    public function getAllTextNodes(): array {
+        $result = [];
+        $this->collectTextNodes($this, $result);
+        return $result;
+    }
+
+    private function collectTextNodes(Node $node, array &$result): void {
+        if ($node->isText) {
+            $result[] = $node;
+        }
+        if (isset($node->children)) {
+            foreach ($node->children as $child) {
+                $this->collectTextNodes($child, $result);
+            }
+        }
+    }
 }
