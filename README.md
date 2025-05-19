@@ -49,6 +49,14 @@ foreach ($root->children as $child) {
 ```php
 // Find all elements with class="foo"
 $nodes = $root->querySelectorAll('.foo');
+// Attribute selectors:
+// Exact match
+$adminNodes = $root->querySelectorAll('[data-role="admin"]');
+// Space-separated word match
+$adminWordNodes = $root->querySelectorAll('[data-role~="admin"]');
+// Substring match
+$adminSubstringNodes = $root->querySelectorAll('[data-role*="admin"]');
+
 // Access by index using item() method
 echo $nodes->item(0)->innerText;
 // Get the number of nodes

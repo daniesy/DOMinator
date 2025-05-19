@@ -72,9 +72,17 @@ trait QueriesNodes {
         if (preg_match('/^#([a-zA-Z0-9\-_]+)/', $selector, $m)) {
             return isset($node->attributes['id']) && $node->attributes['id'] === $m[1];
         }
-        // [attr=value]
-        if (preg_match('/^\[([a-zA-Z0-9\-:]+)=([a-zA-Z0-9\-_]*)\]/', $selector, $m)) {
+        // [attr=value] exact match
+        if (preg_match('/^\[([a-zA-Z0-9\-:]+)=["\'`]?([^"]*)["\'`]?\]$/', $selector, $m)) {
             return isset($node->attributes[$m[1]]) && $node->attributes[$m[1]] === $m[2];
+        }
+        // [attr~=value] space-separated word match
+        if (preg_match('/^\[([a-zA-Z0-9\-:]+)~=["\'`]?([^"]*)["\'`]?\]$/', $selector, $m)) {
+            return isset($node->attributes[$m[1]]) && in_array($m[2], preg_split('/\s+/', $node->attributes[$m[1]]));
+        }
+        // [attr*=value] substring match
+        if (preg_match('/^\[([a-zA-Z0-9\-:]+)\*=["\'`]?([^"]*)["\'`]?\]$/', $selector, $m)) {
+            return isset($node->attributes[$m[1]]) && strpos($node->attributes[$m[1]], $m[2]) !== false;
         }
         return false;
     }

@@ -494,4 +494,31 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<p>Para 1</p>', $htmlOut);
     }
 
+    public function testAttributeSelectorExactMatch() {
+        $html = '<div data-role="admin">A</div><div data-role="user">B</div>';
+        $root = DOMinator::read($html);
+        $nodes = $root->querySelectorAll('[data-role="admin"]');
+        $this->assertCount(1, $nodes);
+        $this->assertEquals('A', $nodes->item(0)->innerText);
+    }
+
+    public function testAttributeSelectorSpaceSeparatedWord() {
+        $html = '<div data-role="admin">A</div><div data-role="super admin">B</div><div data-role="administrator">C</div>';
+        $root = DOMinator::read($html);
+        $nodes = $root->querySelectorAll('[data-role~="admin"]');
+        $this->assertCount(2, $nodes);
+        $this->assertEquals('A', $nodes->item(0)->innerText);
+        $this->assertEquals('B', $nodes->item(1)->innerText);
+    }
+
+    public function testAttributeSelectorSubstring() {
+        $html = '<div data-role="admin">A</div><div data-role="super-admin">B</div><div data-role="administrator">C</div>';
+        $root = DOMinator::read($html);
+        $nodes = $root->querySelectorAll('[data-role*="admin"]');
+        $this->assertCount(3, $nodes);
+        $this->assertEquals('A', $nodes->item(0)->innerText);
+        $this->assertEquals('B', $nodes->item(1)->innerText);
+        $this->assertEquals('C', $nodes->item(2)->innerText);
+    }
+
 }

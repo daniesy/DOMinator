@@ -6,18 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="421cff60-85d1-4900-9d16-7e7ef27c9a34" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DOMinator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DOMinator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/NodeList.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/NodeList.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Nodes/CommentNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/CommentNode.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Nodes/Node.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/Node.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Nodes/ScriptNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ScriptNode.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Nodes/StyleNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/StyleNode.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Traits/ModifiesNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Traits/ModifiesNode.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/DOMinatorTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/DOMinatorTest.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/NodeListTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/NodeListTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/QueryTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/QueryTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/ScriptStyleNodeTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/ScriptStyleNodeTest.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP Herd">
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/composer" />
       <path value="$PROJECT_DIR$/vendor/nikic/php-parser" />
@@ -72,29 +61,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Composer Script.test.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemove.executor": "Run",
-    "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContent.executor": "Run",
-    "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContentSecond.executor": "Run",
-    "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithoutContentSecond.executor": "Run",
-    "PHPUnit.ScriptStyleNodeTest.testParseScriptAndStyle.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Composer Script.test.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemove.executor&quot;: &quot;Run&quot;,
+    &quot;PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContent.executor&quot;: &quot;Run&quot;,
+    &quot;PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContentSecond.executor&quot;: &quot;Run&quot;,
+    &quot;PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithoutContentSecond.executor&quot;: &quot;Run&quot;,
+    &quot;PHPUnit.ScriptStyleNodeTest.testParseScriptAndStyle.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
-  <component name="RunManager" selected="PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemove">
+}</component>
+  <component name="RunManager" selected="PHPUnit.QueryTest.testQuerySelectorAllAttribute">
     <configuration name="DOMinatorTest.testGetAllCommentNodesAndRemove" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
       <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testGetAllCommentNodesAndRemove" scope="Method" />
       <method v="2" />
@@ -107,8 +96,8 @@
       <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testGetAllCommentNodesAndRemoveWithContentSecond" scope="Method" />
       <method v="2" />
     </configuration>
-    <configuration name="DOMinatorTest.testGetAllCommentNodesAndRemoveWithoutContentSecond" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
-      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testGetAllCommentNodesAndRemoveWithoutContentSecond" scope="Method" />
+    <configuration name="QueryTest.testQuerySelectorAllAttribute" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="QueryTest" file="$PROJECT_DIR$/tests/QueryTest.php" method="testQuerySelectorAllAttribute" scope="Method" />
       <method v="2" />
     </configuration>
     <configuration name="ScriptStyleNodeTest.testParseScriptAndStyle" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
@@ -117,11 +106,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="PHPUnit.QueryTest.testQuerySelectorAllAttribute" />
         <item itemvalue="PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemove" />
         <item itemvalue="PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContent" />
         <item itemvalue="PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContentSecond" />
         <item itemvalue="PHPUnit.ScriptStyleNodeTest.testParseScriptAndStyle" />
-        <item itemvalue="PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithoutContentSecond" />
       </list>
     </recent_temporary>
   </component>

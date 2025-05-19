@@ -27,7 +27,7 @@ class NodeListTest extends TestCase {
 
     public function testNodeListCount() {
         $spans = $this->root->querySelectorAll('span');
-        $this->assertEquals(2, count($spans));
+        $this->assertCount(2, $spans);
     }
 
     public function testNodeListIteration() {
