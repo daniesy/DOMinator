@@ -6,7 +6,7 @@ class NodeTest extends TestCase {
     public function testTextNode() {
         $node = new Node('', [], true, 'Hello');
         $this->assertTrue($node->isText);
-        $this->assertEquals('Hello', $node->getInnerText());
+        $this->assertEquals('Hello', $node->innerText);
         $this->assertEquals('Hello', html_entity_decode(strip_tags($node->toHtml())));
     }
 
@@ -34,11 +34,11 @@ class NodeTest extends TestCase {
 
     public function testSetAndGetInnerText() {
         $node = new Node('div');
-        $node->setInnerText('abc');
-        $this->assertEquals('abc', $node->getInnerText());
+        $node->innerText = 'abc';
+        $this->assertEquals('abc', $node->innerText);
         $this->assertTrue($node->children->item(0)->isText);
-        $node->setInnerText('def');
-        $this->assertEquals('def', $node->getInnerText());
+        $node->innerText = 'def';
+        $this->assertEquals('def', $node->innerText);
     }
 
     public function testToHtmlElementAndText() {
@@ -82,17 +82,19 @@ class NodeTest extends TestCase {
 
     public function testSetInnerTextOnTextNode() {
         $node = new Node('', [], true, 'foo');
-        $node->setInnerText('bar');
-        $this->assertEquals('bar', $node->getInnerText());
+        $node->innerText = 'bar';
+        $this->assertEquals('bar', $node->toHtml());
     }
 
     public function testSetInnerTextOnElementWithChildren() {
         $node = new Node('div');
         $node->appendChild(new Node('span', [], true, 'x'));
-        $node->setInnerText('y');
-        $this->assertEquals('y', $node->getInnerText());
+        $this->assertEquals('x', $node->innerText);;
+        $node->innerText = 'y';
+        $this->assertEquals('y', $node->innerText);
         $this->assertCount(1, $node->children);
         $this->assertTrue($node->children->item(0)->isText);
+        $this->assertEquals('<div>y</div>', $node->toHtml());;
     }
 
     public function testToHtmlWithNestedElements() {

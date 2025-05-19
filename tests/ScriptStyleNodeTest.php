@@ -27,8 +27,8 @@ class ScriptStyleNodeTest extends TestCase {
         $script = $root->querySelector('script');
         $style = $root->querySelector('style');
         $this->assertInstanceOf(ScriptNode::class, $script);
-        $this->assertEquals('alert(1);', $script->getInnerText());
+        $this->assertEquals('alert(1);', $script->innerText);
         $this->assertInstanceOf(StyleNode::class, $style);
-        $this->assertEquals('h1{font-size:2em;}', $style->getInnerText());
+        $this->assertEquals('h1{font-size:2em;}', $style->innerText);
     }
 }

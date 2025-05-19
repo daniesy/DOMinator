@@ -20,8 +20,8 @@ class NodeListTest extends TestCase {
 
     public function testNodeListItem() {
         $spans = $this->root->querySelectorAll('span');
-        $this->assertEquals('A', $spans->item(0)->getInnerText());
-        $this->assertEquals('B', $spans->item(1)->getInnerText());
+        $this->assertEquals('A', $spans->item(0)->innerText);
+        $this->assertEquals('B', $spans->item(1)->innerText);
         $this->assertNull($spans->item(2)); // Out of bounds
     }
 
@@ -34,7 +34,7 @@ class NodeListTest extends TestCase {
         $spans = $this->root->querySelectorAll('span');
         $texts = [];
         foreach ($spans as $span) {
-            $texts[] = $span->getInnerText();
+            $texts[] = $span->innerText;
         }
         $this->assertEquals(['A', 'B'], $texts);
     }
@@ -50,7 +50,7 @@ class NodeListTest extends TestCase {
         $spans = $this->root->getElementsByTagName('span');
         $this->assertInstanceOf(NodeList::class, $spans);
         $this->assertEquals(2, $spans->length);
-        $this->assertEquals('A', $spans->item(0)->getInnerText());
-        $this->assertEquals('B', $spans->item(1)->getInnerText());
+        $this->assertEquals('A', $spans->item(0)->innerText);
+        $this->assertEquals('B', $spans->item(1)->innerText);
     }
 }

@@ -9,12 +9,4 @@ class ScriptNode extends Node {
             $this->appendChild(new TextNode('', [], true, $innerText));
         }
     }
-
-    public function getInnerText(): string {
-        $text = '';
-        foreach ($this->children as $child) {
-            $text .= $child->getInnerText();
-        }
-        return $text;
-    }
 }

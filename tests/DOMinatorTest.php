@@ -44,15 +44,15 @@ class DOMinatorTest extends TestCase {
         $nodes = $root->querySelectorAll('.foo');
         $this->assertCount(1, $nodes);
         $this->assertEquals('span', $nodes->item(0)->tag);
-        $this->assertEquals('A', $nodes->item(0)->getInnerText());
+        $this->assertEquals('A', $nodes->item(0)->innerText);
     }
 
     public function testSetInnerText() {
         $html = '<div><span class="foo">A</span></div>';
         $root = DOMinator::read($html);
         $nodes = $root->querySelectorAll('.foo');
-        $nodes->item(0)->setInnerText('B');
-        $this->assertEquals('B', $nodes->item(0)->getInnerText());
+        $nodes->item(0)->innerText = 'B';
+        $this->assertEquals('B', $nodes->item(0)->innerText);
     }
 
     public function testSetAndRemoveAttribute() {
@@ -72,7 +72,7 @@ class DOMinatorTest extends TestCase {
         $nodes->item(0)->remove();
         $spans = $root->querySelectorAll('span');
         $this->assertCount(1, $spans);
-        $this->assertEquals('B', $spans->item(0)->getInnerText());
+        $this->assertEquals('B', $spans->item(0)->innerText);
     }
 
     public function testSelfClosingAndVoidElements() {
@@ -460,6 +460,38 @@ class DOMinatorTest extends TestCase {
         $this->assertStringNotContainsString('<![endif]-->', $htmlOut);
         $this->assertStringContainsString('<a href="#" class="call-to-action-button" style="text-decoration:none;">test</a>', $htmlOut); // 'bar' should remain if not part of comment
         $this->assertStringNotContainsString('<div style="mso-hide: all">', $htmlOut);
+    }
+
+
+    public function testQuerySelectorAllAndBulkEdit() {
+        $html = '<div><p>One</p><p>Two</p><p>Three</p></div>';
+        $root = DOMinator::read($html);
+        $nodes = $root->querySelectorAll('p');
+        $texts = [];
+        foreach ($nodes as $node) {
+            $texts[] = $node->innerText;
+            $node->innerText = strtoupper($node->innerText);
+        }
+        $this->assertEquals(['One', 'Two', 'Three'], $texts);
+        foreach ($nodes as $node) {
+            $this->assertTrue(strtoupper($node->innerText) === $node->innerText);
+        }
+        $htmlOut = $root->toHtml();
+        $this->assertStringContainsString('<p>ONE</p>', $htmlOut);
+        $this->assertStringContainsString('<p>TWO</p>', $htmlOut);
+        $this->assertStringContainsString('<p>THREE</p>', $htmlOut);
+    }
+
+    public function testQuerySelectorAllNestedBulkEdit() {
+        $html = '<section><div><p>First</p></div><div><p>Second</p></div></section>';
+        $root = DOMinator::read($html);
+        $nodes = $root->querySelectorAll('p');
+        foreach ($nodes as $i => $node) {
+            $node->innerText = "Para $i";
+        }
+        $htmlOut = $root->toHtml();
+        $this->assertStringContainsString('<p>Para 0</p>', $htmlOut);
+        $this->assertStringContainsString('<p>Para 1</p>', $htmlOut);
     }
 
 }

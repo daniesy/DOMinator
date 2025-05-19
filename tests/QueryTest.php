@@ -9,8 +9,8 @@ class QueryTest extends TestCase {
         $root = DOMinator::read($html);
         $spans = $root->querySelectorAll('span');
         $this->assertCount(2, $spans);
-        $this->assertEquals('A', $spans->item(0)->getInnerText());
-        $this->assertEquals('B', $spans->item(1)->getInnerText());
+        $this->assertEquals('A', $spans->item(0)->innerText);
+        $this->assertEquals('B', $spans->item(1)->innerText);
     }
 
     public function testQuerySelectorAllClass() {
@@ -18,8 +18,8 @@ class QueryTest extends TestCase {
         $root = DOMinator::read($html);
         $foo = $root->querySelectorAll('.foo');
         $this->assertCount(2, $foo);
-        $this->assertEquals('A', $foo->item(0)->getInnerText());
-        $this->assertEquals('C', $foo->item(1)->getInnerText());
+        $this->assertEquals('A', $foo->item(0)->innerText);
+        $this->assertEquals('C', $foo->item(1)->innerText);
         $bar = $root->querySelectorAll('.bar');
         $this->assertCount(2, $bar);
     }
@@ -29,10 +29,10 @@ class QueryTest extends TestCase {
         $root = DOMinator::read($html);
         $x = $root->querySelectorAll('#x');
         $this->assertCount(1, $x);
-        $this->assertEquals('A', $x->item(0)->getInnerText());
+        $this->assertEquals('A', $x->item(0)->innerText);
         $y = $root->querySelectorAll('#y');
         $this->assertCount(1, $y);
-        $this->assertEquals('B', $y->item(0)->getInnerText());
+        $this->assertEquals('B', $y->item(0)->innerText);
     }
 
     public function testQuerySelectorAllAttribute() {
@@ -40,11 +40,11 @@ class QueryTest extends TestCase {
         $root = DOMinator::read($html);
         $x1 = $root->querySelectorAll('[data-x=1]');
         $this->assertCount(2, $x1);
-        $this->assertEquals('A', $x1->item(0)->getInnerText());
-        $this->assertEquals('C', $x1->item(1)->getInnerText());
+        $this->assertEquals('A', $x1->item(0)->innerText);
+        $this->assertEquals('C', $x1->item(1)->innerText);
         $x2 = $root->querySelectorAll('[data-x=2]');
         $this->assertCount(1, $x2);
-        $this->assertEquals('B', $x2->item(0)->getInnerText());
+        $this->assertEquals('B', $x2->item(0)->innerText);
     }
 
     public function testQuerySelectorAllNoMatch() {
@@ -59,8 +59,8 @@ class QueryTest extends TestCase {
         $root = DOMinator::read($html);
         $foo = $root->querySelectorAll('.foo');
         $this->assertCount(2, $foo);
-        $this->assertEquals('A', $foo->item(0)->getInnerText());
-        $this->assertEquals('B', $foo->item(1)->getInnerText());
+        $this->assertEquals('A', $foo->item(0)->innerText);
+        $this->assertEquals('B', $foo->item(1)->innerText);
     }
 
     public function testQuerySelectorAllMultipleClasses() {
@@ -70,10 +70,10 @@ class QueryTest extends TestCase {
         $bar = $root->querySelectorAll('.bar');
         $this->assertCount(2, $foo);
         $this->assertCount(2, $bar);
-        $this->assertEquals('A', $foo->item(0)->getInnerText());
-        $this->assertEquals('B', $foo->item(1)->getInnerText());
-        $this->assertEquals('A', $bar->item(0)->getInnerText());
-        $this->assertEquals('C', $bar->item(1)->getInnerText());
+        $this->assertEquals('A', $foo->item(0)->innerText);
+        $this->assertEquals('B', $foo->item(1)->innerText);
+        $this->assertEquals('A', $bar->item(0)->innerText);
+        $this->assertEquals('C', $bar->item(1)->innerText);
     }
 
     public function testQuerySelectorAllNestedTags() {
@@ -81,8 +81,8 @@ class QueryTest extends TestCase {
         $root = DOMinator::read($html);
         $spans = $root->querySelectorAll('span');
         $this->assertCount(2, $spans);
-        $this->assertEquals('A', $spans->item(0)->getInnerText());
-        $this->assertEquals('B', $spans->item(1)->getInnerText());
+        $this->assertEquals('A', $spans->item(0)->innerText);
+        $this->assertEquals('B', $spans->item(1)->innerText);
     }
 
     public function testQuerySelectorAllAttributeNoValue() {
@@ -98,7 +98,7 @@ class QueryTest extends TestCase {
         $root = DOMinator::read($html);
         $x1 = $root->querySelectorAll('[data-x=1]');
         $this->assertCount(1, $x1);
-        $this->assertEquals('A', $x1->item(0)->getInnerText());
+        $this->assertEquals('A', $x1->item(0)->innerText);
     }
 
     public function testQuerySelectorAllIdAndClass() {
@@ -108,8 +108,8 @@ class QueryTest extends TestCase {
         $bar = $root->querySelectorAll('.bar');
         $this->assertCount(1, $foo);
         $this->assertCount(1, $bar);
-        $this->assertEquals('A', $foo->item(0)->getInnerText());
-        $this->assertEquals('A', $bar->item(0)->getInnerText());
+        $this->assertEquals('A', $foo->item(0)->innerText);
+        $this->assertEquals('A', $bar->item(0)->innerText);
     }
 
     public function testQuerySelectorAllNoMatchComplex() {
@@ -131,7 +131,7 @@ class QueryTest extends TestCase {
         $root = DOMinator::read($html);
         $spans = $root->querySelectorAll('span');
         $this->assertCount(1, $spans);
-        $this->assertEquals('A', $spans->item(0)->getInnerText());
+        $this->assertEquals('A', $spans->item(0)->innerText);
     }
 
     public function testQuerySelectorAllOnChildNode() {
@@ -140,7 +140,7 @@ class QueryTest extends TestCase {
         $section = $root->querySelectorAll('section')->item(0);
         $foo = $section->querySelectorAll('.foo');
         $this->assertCount(1, $foo);
-        $this->assertEquals('A', $foo->item(0)->getInnerText());
+        $this->assertEquals('A', $foo->item(0)->innerText);
     }
 
     public function testQuerySelectorReturnsFirstMatch() {
@@ -148,7 +148,7 @@ class QueryTest extends TestCase {
         $root = DOMinator::read($html);
         $node = $root->querySelector('.foo');
         $this->assertNotNull($node);
-        $this->assertEquals('A', $node->getInnerText());
+        $this->assertEquals('A', $node->innerText);
     }
 
     public function testQuerySelectorReturnsNullIfNoMatch() {
@@ -163,8 +163,8 @@ class QueryTest extends TestCase {
         $root = DOMinator::read($html);
         $spans = $root->getElementsByTagName('span');
         $this->assertCount(2, $spans);
-        $this->assertEquals('A', $spans->item(0)->getInnerText());
-        $this->assertEquals('B', $spans->item(1)->getInnerText());
+        $this->assertEquals('A', $spans->item(0)->innerText);
+        $this->assertEquals('B', $spans->item(1)->innerText);
     }
 
     public function testGetElementsByTagNameCaseInsensitive() {

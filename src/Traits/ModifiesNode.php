@@ -19,17 +19,35 @@ trait ModifiesNode {
     /**
      * Sets the inner text of this node.
      */
-    public function setInnerText(string $text): void {
-        // Always set innerText for text nodes
-        if ($this->isText) {
-            $this->innerText = $text;
+    protected function setInnerText(string $text): void {
+        if ($this->isText || $this->isComment || $this->isCdata) {
+            $this->contents = $text;
             return;
         }
-        $this->children = new NodeList;
+        // Remove all children and add a single text node if not empty
+        $this->children = new \Daniesy\DOMinator\NodeList();
         if ($text !== '') {
-            $textNode = new TextNode('', [], true, $text);
+            $textNode = new \Daniesy\DOMinator\Nodes\TextNode('', [], true, $text);
             $this->appendChild($textNode);
         }
+    }
+
+    /**
+     * Gets the inner text of this node.
+     * For text, comment, or cdata nodes, returns their innerText directly.
+     * For element nodes, recursively concatenates all descendant text.
+     */
+    protected function getInnerText(): string {
+        // For text, comment, or cdata nodes, return their innerText directly
+        if ($this->isText || $this->isComment || $this->isCdata) {
+            return $this->contents;
+        }
+        // For element nodes, recursively concatenate all descendant text
+        $text = '';
+        foreach ($this->children as $child) {
+            $text .= $child->getInnerText();
+        }
+        return $text;
     }
 
     /**

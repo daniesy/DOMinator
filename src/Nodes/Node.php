@@ -7,6 +7,10 @@ use Daniesy\DOMinator\Traits\ModifiesNode;
 use Daniesy\DOMinator\NodeList;
 
 // Represents a node in the HTML tree (element or text)
+/**
+ * @property string $innerText
+ */
+
 class Node {
     use QueriesNodes, ModifiesNode, HandlesAttributes;
 
@@ -18,7 +22,7 @@ class Node {
         public string $tag = '',
         public array $attributes = [],
         public bool $isText = false,
-        public string $innerText = '',
+        protected string $contents = '',
         public bool $isComment = false,
         public bool $isCdata = false,
         public string $namespace = ''
@@ -28,23 +32,19 @@ class Node {
 
     public function __get($name) {
         if ($name === 'innerText') {
-            return $this->getInnerText();
+            return $this->getInnerText(); // Use trait's method
         }
         return $this->$name ?? null;
     }
     
-    public function getInnerText(): string
-    {
-        if ($this->isText) {
-            return $this->innerText;
+    public function __set($name, $value) {
+        if ($name === 'innerText') {
+            $this->setInnerText($value); // Use trait's method
+            return;
         }
-        $text = '';
-        foreach ($this->children as $child) {
-            $text .= $child->getInnerText();
-        }
-        return $text;
+        $this->$name = $value;
     }
-
+    
     public function toHtml(): string
     {
         // Special handling: if this is the artificial root node, only export its children
