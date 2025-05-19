@@ -13,7 +13,7 @@ trait ModifiesNode {
      */
     public function appendChild(Node $child): void {
         $child->parent = $this;
-        $this->children[] = $child;
+        $this->children->add($child);
     }
 
     /**
@@ -91,4 +91,43 @@ trait ModifiesNode {
             $this->parent = null;
         }
     }
+
+    /**
+     * Inserts a node before this node in the parent's children list.
+     * @param Node $newNode
+     */
+    public function insertBefore(Node $newNode): void {
+        if (!$this->parent) return;
+        $siblings = $this->parent->children;
+        $newNodes = [];
+        $inserted = false;
+        foreach ($siblings as $sibling) {
+            if ($sibling === $this && !$inserted) {
+                $newNode->parent = $this->parent;
+                $newNodes[] = $newNode;
+                $inserted = true;
+            }
+            $newNodes[] = $sibling;
+        }
+        $this->parent->children = new NodeList($newNodes);
+    }
+
+    /**
+     * Inserts a node after this node in the parent's children list.
+     * @param Node $newNode
+     */
+    public function insertAfter(Node $newNode): void {
+        if (!$this->parent) return;
+        $siblings = $this->parent->children;
+        $newNodes = [];
+        foreach ($siblings as $sibling) {
+            $newNodes[] = $sibling;
+            if ($sibling === $this) {
+                $newNode->parent = $this->parent;
+                $newNodes[] = $newNode;
+            }
+        }
+        $this->parent->children = new NodeList($newNodes);
+    }
+
 }

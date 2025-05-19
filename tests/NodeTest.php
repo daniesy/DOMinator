@@ -135,4 +135,39 @@ class NodeTest extends TestCase {
         $html = $node->toHtml();
         $this->assertStringContainsString('<circle r="10">', $html);
     }
+
+    public function testInsertBeforeAndAfter() {
+        $parent = new Node('div');
+        $a = new Node('span', [], true, 'A');
+        $b = new Node('span', [], true, 'B');
+        $c = new Node('span', [], true, 'C');
+        $parent->appendChild($a);
+        $parent->appendChild($c);
+        // Insert B before C
+        $c->insertBefore($b);
+        $this->assertEquals('A', $parent->children->item(0)->innerText);
+        $this->assertEquals('B', $parent->children->item(1)->innerText);
+        $this->assertEquals('C', $parent->children->item(2)->innerText);
+        // Insert D after B
+        $d = new Node('span', [], true, 'D');
+        $b->insertAfter($d);
+        $this->assertEquals('A', $parent->children->item(0)->innerText);
+        $this->assertEquals('B', $parent->children->item(1)->innerText);
+        $this->assertEquals('D', $parent->children->item(2)->innerText);
+        $this->assertEquals('C', $parent->children->item(3)->innerText);
+        // Insert E before A (at start)
+        $e = new Node('span', [], true, 'E');
+        $a->insertBefore($e);
+        $this->assertEquals('E', $parent->children->item(0)->innerText);
+        $this->assertEquals('A', $parent->children->item(1)->innerText);
+        // Insert F after C (at end)
+        $f = new Node('span', [], true, 'F');
+        $c->insertAfter($f);
+        $this->assertEquals('F', $parent->children->last()->innerText);
+        // Check parent references
+        $this->assertSame($parent, $b->parent);
+        $this->assertSame($parent, $d->parent);
+        $this->assertSame($parent, $e->parent);
+        $this->assertSame($parent, $f->parent);
+    }
 }

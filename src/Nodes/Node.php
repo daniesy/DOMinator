@@ -32,13 +32,7 @@ class Node {
         }
         return $this->$name ?? null;
     }
-
-    public function appendChild($child): void
-    {
-        $child->parent = $this;
-        $this->children->add($child);
-    }
-
+    
     public function getInnerText(): string
     {
         if ($this->isText) {
