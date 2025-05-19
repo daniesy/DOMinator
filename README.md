@@ -50,27 +50,27 @@ foreach ($root->children as $child) {
 // Find all elements with class="foo"
 $nodes = $root->querySelectorAll('.foo');
 // Access by index using item() method
-echo $nodes->item(0)->getInnerText();
+echo $nodes->item(0)->innerText;
 // Get the number of nodes
 echo $nodes->length;
 // Iterate over nodes
 foreach ($nodes as $node) {
-    echo $node->getInnerText();
+    echo $node->innerText;
 }
 
 // Find the first <span> element
 $span = $root->querySelector('span');
 if ($span) {
-    echo $span->getInnerText();
+    echo $span->innerText;
 }
 
 // Find all <div> elements (case-insensitive)
 $divs = $root->getElementsByTagName('div');
 // Access by index
-echo $divs->item(0)->getInnerText();
+echo $divs->item(0)->innerText;
 // Iterate over nodes
 foreach ($divs as $div) {
-    echo $div->getInnerText();
+    echo $div->innerText;
 }
 ```
 
@@ -79,7 +79,7 @@ foreach ($divs as $div) {
 ```php
 $node = $nodes->item(0);
 $node->setAttribute('id', 'new-id');
-$node->setInnerText('Updated text');
+$node->innerText = 'Updated text';
 $node->remove(); // Remove from parent
 ```
 
@@ -127,8 +127,6 @@ echo $svg->tag;       // 'rect'
   - `isComment`, `isCdata`: Node type flags
   - `parent`: Parent node
 - Methods:
-  - `getInnerText()`: Get all text content
-  - `setInnerText($text)`: Set text content
   - `setAttribute($name, $value)`: Set or update attribute
   - `removeAttribute($name)`: Remove attribute
   - `remove()`: Remove node from parent
