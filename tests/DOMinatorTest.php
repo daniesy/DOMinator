@@ -573,6 +573,33 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals($expected, trim($pretty));
     }
 
+    public function testToHtmlPrettyPrintSecond()
+    {
+        $html = '<button >
+    <div>
+        <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img" alt="">
+            <title >
+ %%ab066b3292d8ab61ef3b5c77169cdd19%%
+ </title>
+            <path></path>
+            <path></path>
+        </svg>
+    </div>
+</button>';
+        $root = DOMinator::read($html);
+        $pretty = $root->toInlinedHtml(false);
+        $expected = '<button>
+    <div>
+        <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img" alt="">
+            <title>%%ab066b3292d8ab61ef3b5c77169cdd19%%</title>
+            <path></path>
+            <path></path>
+        </svg>
+    </div>
+</button>';
+        $this->assertEquals($expected, $pretty);
+    }
+
     public function testToInlinedHtmlSimpleSelectors() {
         $html = '<style>div { color: red; } .foo { font-weight: bold; } #bar { text-align: center; }</style>'
             .'<div class="foo" id="bar">A</div><div>B</div>';
@@ -590,30 +617,6 @@ class DOMinatorTest extends TestCase {
         $expected = "<span class=\"x\" style=\"color: blue;\">T</span>";
         $this->assertEquals($expected, trim($pretty));
         $this->assertStringNotContainsString('<style>', $pretty);
-
-        $html = '<button >
-    <div>
-        <svg>
-            <title >
- %%ab066b3292d8ab61ef3b5c77169cdd19%%
- </title>
-            <path></path>
-            <path></path>
-        </svg>
-    </div>
-</button>';
-        $root = DOMinator::read($html);
-        $pretty = $root->toInlinedHtml(false);
-        $expected = $html = '<button>
-    <div>
-        <svg>
-            <title>%%ab066b3292d8ab61ef3b5c77169cdd19%%</title>
-            <path></path>
-            <path></path>
-        </svg>
-    </div>
-</button>';
-        $this->assertEquals($expected, $pretty);
     }
 
     public function testToInlinedHtmlKeepsUnmatchedAndGlobalRules() {
