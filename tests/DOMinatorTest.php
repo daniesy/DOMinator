@@ -699,4 +699,10 @@ class DOMinatorTest extends TestCase {
         $root = DOMinator::read($japaneseInput);
         $this->assertEquals($japaneseInput, $root->toHtml());
     }
+
+    public function testComplexAttributes() {
+        $source = '<div ngcontent-afp-c35="" class="dropdown" @click.prevent="dropdownVisible = !dropdownVisible"></div>';
+        $root = DOMinator::read($source);
+        $this->assertEquals($source, $root->toHtml());
+    }
 }

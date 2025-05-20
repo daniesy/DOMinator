@@ -149,7 +149,7 @@ class DOMinator {
     private static function parseAttributes(string $str): array {
         $attrs = [];
         // Match key="value", key='value', key=value, or key (boolean attribute)
-        if (preg_match_all('/([a-zA-Z0-9\-:]+)(?:\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+))?/', $str, $m, PREG_SET_ORDER)) {
+        if (preg_match_all('/([@a-zA-Z0-9_\-:.]+)(?:\s*=\s*("[^"]*"|\'[^"]*\'|[^\s>]+))?/', $str, $m, PREG_SET_ORDER)) {
             foreach ($m as $a) {
                 $name = $a[1];
                 if (isset($a[2]) && $a[2] !== '') {
