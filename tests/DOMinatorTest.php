@@ -391,22 +391,22 @@ class DOMinatorTest extends TestCase {
         $root = DOMinator::read($html); // Assuming Node::parse exists, or use HtmlParser if needed
         $textNodes = $root->getAllTextNodes();
         $this->assertCount(4, $textNodes);
-        $this->assertEquals('Hello ', $textNodes[0]->innerText);
-        $this->assertEquals('World', $textNodes[1]->innerText);
-        $this->assertEquals(' and ', $textNodes[2]->innerText);
-        $this->assertEquals('Universe', $textNodes[3]->innerText);
+        $this->assertEquals('Hello ', $textNodes->first()->innerText);
+        $this->assertEquals('World', $textNodes->item(1)->innerText);
+        $this->assertEquals(' and ', $textNodes->item(2)->innerText);
+        $this->assertEquals('Universe', $textNodes->item(3)->innerText);
     
         // Modify text nodes
-        $textNodes[0]->innerText = 'Hi ';
-        $textNodes[1]->innerText = 'Earth';
-        $textNodes[3]->innerText = 'Galaxy';
+        $textNodes->first()->innerText = 'Hi ';
+        $textNodes->item(1)->innerText = 'Earth';
+        $textNodes->item(3)->innerText = 'Galaxy';
         $htmlOut = $root->toHtml();
         $this->assertStringContainsString('Hi <b>Earth</b> and <i>Galaxy</i>', $htmlOut);
         $this->assertEquals('<div>Hi <b>Earth</b> and <i>Galaxy</i></div>', $htmlOut);
 
-        $this->assertEquals('div', $textNodes[0]->parent->tag);
-        $this->assertEquals('b', $textNodes[1]->parent->tag);
-        $this->assertEquals('i', $textNodes[3]->parent->tag);
+        $this->assertEquals('div', $textNodes->first()->parent->tag);
+        $this->assertEquals('b', $textNodes->item(1)->parent->tag);
+        $this->assertEquals('i', $textNodes->item(3)->parent->tag);
     }
 
     public function testGetAllCommentNodesAndRemove() {
@@ -414,8 +414,8 @@ class DOMinatorTest extends TestCase {
         $root = DOMinator::read($html);
         $comments = $root->getAllCommentNodes();
         $this->assertCount(2, $comments);
-        $this->assertEquals(' comment1 ', $comments[0]->innerText);
-        $this->assertEquals(' comment2 ', $comments[1]->innerText);
+        $this->assertEquals(' comment1 ', $comments->first()->innerText);
+        $this->assertEquals(' comment2 ', $comments->item(1)->innerText);
         // Remove all comments
         foreach ($comments as $comment) {
             $comment->remove();
@@ -705,4 +705,5 @@ class DOMinatorTest extends TestCase {
         $root = DOMinator::read($source);
         $this->assertEquals($source, $root->toHtml());
     }
+
 }

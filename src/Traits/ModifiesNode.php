@@ -25,9 +25,9 @@ trait ModifiesNode {
             return;
         }
         // Remove all children and add a single text node if not empty
-        $this->children = new \Daniesy\DOMinator\NodeList();
+        $this->children = new NodeList();
         if ($text !== '') {
-            $textNode = new \Daniesy\DOMinator\Nodes\TextNode('', [], true, $text);
+            $textNode = new TextNode('', [], true, $text);
             $this->appendChild($textNode);
         }
     }
@@ -54,7 +54,7 @@ trait ModifiesNode {
      * Recursively collects all text nodes (for modification).
      * @return Node[] Array of text nodes (isText === true)
      */
-    public function getAllTextNodes(): array {
+    public function getAllTextNodes(): NodeList {
         return $this->collectNodesByType('isText');
     }
 
@@ -62,7 +62,7 @@ trait ModifiesNode {
      * Returns all comment nodes (<!-- ... -->) in the subtree.
      * @return Node[]
      */
-    public function getAllCommentNodes(): array {
+    public function getAllCommentNodes(): NodeList {
         return $this->collectNodesByType('isComment');
     }
     
@@ -71,10 +71,10 @@ trait ModifiesNode {
      * @param string $typeProperty Property to check (isText, isComment, etc.)
      * @return Node[] Array of matching nodes
      */
-    private function collectNodesByType(string $typeProperty): array {
+    private function collectNodesByType(string $typeProperty): NodeList {
         $result = [];
         $this->traverseCollectNodes($this, $result, $typeProperty);
-        return $result;
+        return new NodeList($result);
     }
     
     /**
