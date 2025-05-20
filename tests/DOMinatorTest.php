@@ -669,7 +669,7 @@ class DOMinatorTest extends TestCase {
     }
 
     public function testHTMLCharacterEntities() {
-        $input = "<p>Special characters: &amp; &lt; &gt; &quot; &apos;</p>";
+        $input = "<p>Special characters: &nbsp; &amp; &lt; &gt; &quot; &apos;</p>";
         $root = DOMinator::read($input);
         $this->assertEquals($input, $root->toHtml());
     }
@@ -694,7 +694,7 @@ class DOMinatorTest extends TestCase {
         $chineseInput = "<p>Chinese: 你好，世界</p>";
         $root = DOMinator::read($chineseInput);
         $this->assertEquals($chineseInput, $root->toHtml());
-        
+
         $japaneseInput = "<p>Japanese: こんにちは世界</p>";
         $root = DOMinator::read($japaneseInput);
         $this->assertEquals($japaneseInput, $root->toHtml());

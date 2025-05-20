@@ -20,8 +20,9 @@ class TextNode extends Node {
         if (in_array($parentTag, ['script', 'style'], true)) {
             return $this->contents;
         }
-        // Always encode special characters as HTML entities
         $text = str_replace('&#039;', '&apos;', htmlspecialchars($this->contents, ENT_QUOTES | ENT_HTML5));
+        // Replace UTF-8 non-breaking space (\xC2\xA0) with &nbsp;
+        $text = str_replace("\xC2\xA0", "&nbsp;", $text);
         return match (true) {
             $minify => $text,
             in_array($parentTag, ['pre', 'textarea', 'title'], true) => $this->contents,
