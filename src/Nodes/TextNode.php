@@ -16,13 +16,16 @@ class TextNode extends Node {
      */
     public function toHtml(bool $minify = true, int $level = 0): string
     {
-        // Check if parent tag is one of those where whitespace should be preserved
-        $parentTag = $this->parent?->tag ?? '';
-        
+        $parentTag = strtolower($this->parent?->tag ?? '');
+        if (in_array($parentTag, ['script', 'style'], true)) {
+            return $this->contents;
+        }
+        // Always encode special characters as HTML entities
+        $text = str_replace('&#039;', '&apos;', htmlspecialchars($this->contents, ENT_QUOTES | ENT_HTML5));
         return match (true) {
-            $minify => $this->contents,
-            in_array(strtolower($parentTag), ['pre', 'textarea', 'script', 'style', 'title'], true) => $this->contents,
-            default => preg_replace('/[ \t\r\n]+/', ' ', $this->contents),
+            $minify => $text,
+            in_array($parentTag, ['pre', 'textarea', 'title'], true) => $this->contents,
+            default => preg_replace('/[ \t\r\n]+/', ' ', $text),
         };
     }
 }

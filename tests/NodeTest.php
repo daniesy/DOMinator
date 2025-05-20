@@ -111,8 +111,8 @@ class NodeTest extends TestCase {
         $node = new Node('div', ['title' => 'a<b>c']);
         $node->appendChild(new Node('', [], true, 'x < y & z'));
         $html = $node->toHtml();
-        $this->assertStringContainsString('title="a<b>c"', $html);
-        $this->assertStringContainsString('x < y & z', $html);
+        $this->assertStringContainsString('title="a&lt;b&gt;c"', $html);
+        $this->assertStringContainsString('x &lt; y &amp; z', $html);
     }
 
     public function testRemoveOnRootNode() {

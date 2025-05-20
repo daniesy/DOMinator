@@ -667,4 +667,36 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('.unused { color: green; }', $inlined);
         $this->assertStringContainsString('<div>B</div>', $inlined);
     }
+
+    public function testHTMLCharacterEntities() {
+        $input = "<p>Special characters: &amp; &lt; &gt; &quot; &apos;</p>";
+        $root = DOMinator::read($input);
+        $this->assertEquals($input, $root->toHtml());
+    }
+
+    public function testAccentsCharacters() {
+        $input = "<p>Accents: é è ê ë à â ä î ï ô ö û ü</p>";
+        $root = DOMinator::read($input);
+        $this->assertEquals($input, $root->toHtml());
+
+        $romanianInput = "<p>Romanian: ă â î ș ț</p>";
+        $root = DOMinator::read($romanianInput);
+        $this->assertEquals($romanianInput, $root->toHtml());
+
+        $cyrillicInput = "<p>Cyrillic: Привет мир</p>";
+        $root = DOMinator::read($cyrillicInput);
+        $this->assertEquals($cyrillicInput, $root->toHtml());
+
+        $arabicInput = "<p>Arabic: مرحبا بالعالم</p>";
+        $root = DOMinator::read($arabicInput);
+        $this->assertEquals($arabicInput, $root->toHtml());
+
+        $chineseInput = "<p>Chinese: 你好，世界</p>";
+        $root = DOMinator::read($chineseInput);
+        $this->assertEquals($chineseInput, $root->toHtml());
+        
+        $japaneseInput = "<p>Japanese: こんにちは世界</p>";
+        $root = DOMinator::read($japaneseInput);
+        $this->assertEquals($japaneseInput, $root->toHtml());
+    }
 }

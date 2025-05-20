@@ -101,7 +101,7 @@ class DOMinator {
                     // Collapse all whitespace (space, tab, newline, etc) to a single space
                     $text = preg_replace('/\s+/', ' ', $text);
                 }
-                $textNode = new TextNode('', [], true, html_entity_decode($text));
+                $textNode = new TextNode('', [], true, html_entity_decode($text, ENT_QUOTES | ENT_HTML5));
                 end($stack)->appendChild($textNode);
                 $offset += strlen($m[1]);
             } else {
@@ -153,7 +153,7 @@ class DOMinator {
             foreach ($m as $a) {
                 $name = $a[1];
                 if (isset($a[2]) && $a[2] !== '') {
-                    $val = html_entity_decode(trim($a[2], "'\""));
+                    $val = html_entity_decode(trim($a[2], "'\""), ENT_QUOTES | ENT_HTML5);
                 } else {
                     $val = '';
                 }

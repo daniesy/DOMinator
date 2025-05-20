@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="421cff60-85d1-4900-9d16-7e7ef27c9a34" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.phpunit.result.cache" beforeDir="false" afterPath="$PROJECT_DIR$/.phpunit.result.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/DOMinatorTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/DOMinatorTest.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -71,6 +69,7 @@
     "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContent.executor": "Run",
     "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContentSecond.executor": "Run",
     "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithoutContentSecond.executor": "Run",
+    "PHPUnit.DOMinatorTest.testNBSP.executor": "Run",
     "PHPUnit.DOMinatorTest.testToHtmlPrettyPrintSecond.executor": "Run",
     "PHPUnit.QueryTest.testQuerySelectorAllAttribute.executor": "Debug",
     "PHPUnit.ScriptStyleNodeTest.testParseScriptAndStyle.executor": "Run",
@@ -87,7 +86,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="PHPUnit.DOMinatorTest.testToHtmlPrettyPrintSecond">
+  <component name="RunManager" selected="PHPUnit.DOMinatorTest.testNBSP">
     <configuration name="DOMinatorTest.testGetAllCommentNodesAndRemove" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
       <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testGetAllCommentNodesAndRemove" scope="Method" />
       <method v="2" />
@@ -96,8 +95,8 @@
       <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testGetAllCommentNodesAndRemoveWithContent" scope="Method" />
       <method v="2" />
     </configuration>
-    <configuration name="DOMinatorTest.testGetAllCommentNodesAndRemoveWithContentSecond" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
-      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testGetAllCommentNodesAndRemoveWithContentSecond" scope="Method" />
+    <configuration name="DOMinatorTest.testNBSP" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testNBSP" scope="Method" />
       <method v="2" />
     </configuration>
     <configuration name="DOMinatorTest.testToHtmlPrettyPrintSecond" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
@@ -110,11 +109,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="PHPUnit.DOMinatorTest.testNBSP" />
         <item itemvalue="PHPUnit.DOMinatorTest.testToHtmlPrettyPrintSecond" />
         <item itemvalue="PHPUnit.QueryTest.testQuerySelectorAllAttribute" />
         <item itemvalue="PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemove" />
         <item itemvalue="PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContent" />
-        <item itemvalue="PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContentSecond" />
       </list>
     </recent_temporary>
   </component>
@@ -140,7 +139,7 @@
       <workItem from="1747500604730" duration="2567000" />
       <workItem from="1747652076861" duration="985000" />
       <workItem from="1747679602463" duration="454000" />
-      <workItem from="1747777918887" duration="244000" />
+      <workItem from="1747777918887" duration="1609000" />
     </task>
     <servers />
   </component>

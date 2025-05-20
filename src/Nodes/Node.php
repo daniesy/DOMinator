@@ -105,7 +105,7 @@ class Node {
         if ($this->isText) {
             // For text nodes, don't add indentation in pretty print mode
             // If it's only whitespace and we're in pretty print mode, skip it
-            $text = htmlspecialchars_decode(htmlspecialchars($this->innerText));
+            $text = str_replace('&#039;', '&apos;', htmlspecialchars($this->innerText, ENT_QUOTES | ENT_HTML5));
             if (!$minify && trim($text) === '') {
                 return '';
             }
@@ -113,7 +113,7 @@ class Node {
         }
         $attr = '';
         foreach ($this->attributes as $k => $v) {
-            $attr .= ' ' . $k . '="' . htmlspecialchars_decode(htmlspecialchars($v)) . '"';
+            $attr .= ' ' . $k . '="' . str_replace('&#039;', '&apos;', htmlspecialchars($v, ENT_QUOTES | ENT_HTML5)) . '"';
         }
         $html .= $indent . "<{$this->tag}{$attr}>";
         if ($this->children->length) {
@@ -123,7 +123,7 @@ class Node {
                 if ($this->tag === 'title' && $this->parent && $this->parent->tag === 'svg') {
                     $html .= trim(preg_replace('/\s+/', ' ', $this->children->item(0)->innerText));
                 } else {
-                    $html .= $this->children->item(0)->innerText;
+                    $html .= $this->children->item(0)->toHtml($minify, $level + 1);
                 }
             } else {
                 if (!$minify) $html .= $newline;
@@ -138,7 +138,7 @@ class Node {
                 $html .= $minify ? '' : $indent;
             }
         } else {
-            $html .= htmlspecialchars($this->innerText);
+            $html .= str_replace('&#039;', '&apos;', htmlspecialchars($this->innerText, ENT_QUOTES | ENT_HTML5));
         }
         $html .= "</{$this->tag}>";
         return $html;
