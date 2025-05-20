@@ -44,6 +44,7 @@ class DOMinator {
                 $offset += strlen($m[0]);
             }
             // Script/style raw content
+            // Handle script and style nodes specially to preserve their content
             elseif (preg_match('/^<(script)([^>]*)>([\s\S]*?)<\/script>/i', $substr, $m)) {
                 $attrs = self::parseAttributes($m[2]);
                 $node = new ScriptNode($attrs, $m[3]);
@@ -139,10 +140,16 @@ class DOMinator {
         return new Node('root');
     }
 
+    /**
+     * Parse HTML attributes from a string
+     * 
+     * @param string $str The attribute string to parse
+     * @return array An associative array of attribute name => value pairs
+     */
     private static function parseAttributes(string $str): array {
         $attrs = [];
         // Match key="value", key='value', key=value, or key (boolean attribute)
-        if (preg_match_all('/([a-zA-Z0-9\-:]+)(?:\s*=\s*("[^"]*"|\'[^"]*\'|[^\s>]+))?/', $str, $m, PREG_SET_ORDER)) {
+        if (preg_match_all('/([a-zA-Z0-9\-:]+)(?:\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+))?/', $str, $m, PREG_SET_ORDER)) {
             foreach ($m as $a) {
                 $name = $a[1];
                 if (isset($a[2]) && $a[2] !== '') {

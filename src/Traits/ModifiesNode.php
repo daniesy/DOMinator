@@ -55,22 +55,7 @@ trait ModifiesNode {
      * @return Node[] Array of text nodes (isText === true)
      */
     public function getAllTextNodes(): array {
-        $result = [];
-        $this->collectTextNodes($this, $result);
-        return $result;
-    }
-
-    private function collectTextNodes(Node $node, array &$result): void {
-        if ($node && $node->isText) {
-            $result[] = $node;
-        }
-        if ($node && isset($node->children)) {
-            foreach ($node->children as $child) {
-                if ($child) {
-                    $this->collectTextNodes($child, $result);
-                }
-            }
-        }
+        return $this->collectNodesByType('isText');
     }
 
     /**
@@ -78,19 +63,31 @@ trait ModifiesNode {
      * @return Node[]
      */
     public function getAllCommentNodes(): array {
+        return $this->collectNodesByType('isComment');
+    }
+    
+    /**
+     * Generic method to collect nodes by their type property
+     * @param string $typeProperty Property to check (isText, isComment, etc.)
+     * @return Node[] Array of matching nodes
+     */
+    private function collectNodesByType(string $typeProperty): array {
         $result = [];
-        $this->collectCommentNodes($this, $result);
+        $this->traverseCollectNodes($this, $result, $typeProperty);
         return $result;
     }
-
-    private function collectCommentNodes(Node $node, array &$result): void {
-        if ($node && isset($node->isComment) && $node->isComment) {
+    
+    /**
+     * Generic traversal method for collecting nodes by type
+     */
+    private function traverseCollectNodes(Node $node, array &$result, string $typeProperty): void {
+        if ($node && isset($node->$typeProperty) && $node->$typeProperty === true) {
             $result[] = $node;
         }
         if ($node && isset($node->children)) {
             foreach ($node->children as $child) {
                 if ($child) {
-                    $this->collectCommentNodes($child, $result);
+                    $this->traverseCollectNodes($child, $result, $typeProperty);
                 }
             }
         }
@@ -115,23 +112,41 @@ trait ModifiesNode {
     }
 
     /**
-     * Inserts a node before this node in the parent's children list.
-     * @param Node $newNode
+     * Internal helper to insert nodes relative to the current node
+     * @param Node $newNode The node to insert
+     * @param bool $before True to insert before this node, false to insert after
      */
-    public function insertBefore(Node $newNode): void {
+    private function insertRelative(Node $newNode, bool $before): void {
         if (!$this->parent) return;
+        
         $siblings = $this->parent->children;
         $newNodes = [];
         $inserted = false;
+        
         foreach ($siblings as $sibling) {
-            if ($sibling === $this && !$inserted) {
+            if ($before && $sibling === $this && !$inserted) {
                 $newNode->parent = $this->parent;
                 $newNodes[] = $newNode;
                 $inserted = true;
             }
+            
             $newNodes[] = $sibling;
+            
+            if (!$before && $sibling === $this) {
+                $newNode->parent = $this->parent;
+                $newNodes[] = $newNode;
+            }
         }
+        
         $this->parent->children = new NodeList($newNodes);
+    }
+
+    /**
+     * Inserts a node before this node in the parent's children list.
+     * @param Node $newNode
+     */
+    public function insertBefore(Node $newNode): void {
+        $this->insertRelative($newNode, true);
     }
 
     /**
@@ -139,17 +154,7 @@ trait ModifiesNode {
      * @param Node $newNode
      */
     public function insertAfter(Node $newNode): void {
-        if (!$this->parent) return;
-        $siblings = $this->parent->children;
-        $newNodes = [];
-        foreach ($siblings as $sibling) {
-            $newNodes[] = $sibling;
-            if ($sibling === $this) {
-                $newNode->parent = $this->parent;
-                $newNodes[] = $newNode;
-            }
-        }
-        $this->parent->children = new NodeList($newNodes);
+        $this->insertRelative($newNode, false);
     }
 
 }

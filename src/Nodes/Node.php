@@ -134,8 +134,12 @@ class Node {
         $this->collectStyleNodes($styleNodes);
         foreach ($styleNodes as $styleNode) {
             $css = '';
-            foreach ($styleNode->children as $child) {
-                $css .= $child->innerText;
+            if (isset($styleNode->children)) {
+                foreach ($styleNode->children as $child) {
+                    if ($child) {
+                        $css .= $child->innerText;
+                    }
+                }
             }
             $parsed = CssParser::parse($css);
             $allCssRules[] = [ 'node' => $styleNode, 'rules' => $parsed ];
@@ -167,8 +171,12 @@ class Node {
         if ($this->tag === 'style') {
             $styleNodes[] = $this;
         }
-        foreach ($this->children as $child) {
-            $child->collectStyleNodes($styleNodes);
+        if (isset($this->children)) {
+            foreach ($this->children as $child) {
+                if ($child) {
+                    $child->collectStyleNodes($styleNodes);
+                }
+            }
         }
     }
 
@@ -182,18 +190,25 @@ class Node {
                     foreach ($entry['props'] as $k => $v) {
                         $matchedProps[$k] = $v;
                     }
-                    $inlined[$entry['styleNode']->id ?? spl_object_id($entry['styleNode'])][$entry['raw']] = true;
+                    $nodeId = $entry['styleNode']->id ?? spl_object_id($entry['styleNode']);
+                    $inlined[$nodeId][$entry['raw']] = true;
                 }
             }
             if ($matchedProps) {
-                $this->attributes['style'] = '';
+                $styleValue = '';
                 foreach ($matchedProps as $k => $v) {
-                    $this->attributes['style'] .= $k . ': ' . $v . ';';
+                    $styleValue .= $k . ': ' . $v . ';';
                 }
+                $this->attributes['style'] = $styleValue;
             }
         }
-        foreach ($this->children as $child) {
-            $child->applyAdvancedInlineStyles($selectorMap, $inlined);
+        
+        if (isset($this->children)) {
+            foreach ($this->children as $child) {
+                if ($child) {
+                    $child->applyAdvancedInlineStyles($selectorMap, $inlined);
+                }
+            }
         }
     }
 
@@ -202,8 +217,12 @@ class Node {
     {
         if ($this->tag === 'style') {
             $css = '';
-            foreach ($this->children as $child) {
-                $css .= $child->innerText;
+            if (isset($this->children)) {
+                foreach ($this->children as $child) {
+                    if ($child) {
+                        $css .= $child->innerText;
+                    }
+                }
             }
             $parsed = CssParser::parse($css);
             $kept = [];
@@ -238,10 +257,15 @@ class Node {
         );
         $clone->doctype = $this->doctype ?? '';
         $clone->xmlDeclaration = $this->xmlDeclaration ?? '';
-        foreach ($this->children as $child) {
-            $clonedChild = $child->deepCloneWithAdvancedStyleRemoval($allCssRules, $inlined);
-            if ($clonedChild !== null) {
-                $clone->appendChild($clonedChild);
+        
+        if (isset($this->children)) {
+            foreach ($this->children as $child) {
+                if ($child) {
+                    $clonedChild = $child->deepCloneWithAdvancedStyleRemoval($allCssRules, $inlined);
+                    if ($clonedChild !== null) {
+                        $clone->appendChild($clonedChild);
+                    }
+                }
             }
         }
         return $clone;
