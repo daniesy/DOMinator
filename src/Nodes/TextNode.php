@@ -17,16 +17,12 @@ class TextNode extends Node {
     public function toHtml(bool $minify = true, int $level = 0): string
     {
         // Check if parent tag is one of those where whitespace should be preserved
-        $parentTag = $this->parent ? strtolower($this->parent->tag) : '';
-        $preserve = in_array($parentTag, ['pre', 'textarea', 'script', 'style', 'title'], true);
+        $parentTag = $this->parent?->tag ?? '';
         
-        // If minifying or parent requires preserving whitespace, return content as-is
-        if ($minify || $preserve) {
-            return $this->contents;
-        }
-        
-        // For pretty-print, collapse whitespace to a single space
-        $text = preg_replace('/[ \t\r\n]+/', ' ', $this->contents);
-        return $text;
+        return match (true) {
+            $minify => $this->contents,
+            in_array(strtolower($parentTag), ['pre', 'textarea', 'script', 'style', 'title'], true) => $this->contents,
+            default => preg_replace('/[ \t\r\n]+/', ' ', $this->contents),
+        };
     }
 }

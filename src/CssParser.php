@@ -68,8 +68,14 @@ class CssParser {
         return $result;
     }
 
-    // Returns true if the selector matches the node (supports tag, .class, #id, descendant, child)
-    public static function matches($selector, Node $node) {
+    /**
+     * Returns true if the selector matches the node (supports tag, .class, #id, descendant, child)
+     * 
+     * @param string $selector The CSS selector to match against
+     * @param Node $node The node to check
+     * @return bool True if the node matches the selector
+     */
+    public static function matches(string $selector, Node $node): bool {
         $parts = preg_split('/\s+(?![^\[]*\])/', trim($selector));
         return self::matchSelectorParts($parts, $node);
     }

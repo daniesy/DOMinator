@@ -97,4 +97,13 @@ class NodeList implements IteratorAggregate, Countable {
     public function getIterator(): Iterator {
         return new ArrayIterator($this->nodes);
     }
+    
+    /**
+     * Returns the nodes as an array (PHP 8.4 feature)
+     * 
+     * @return array<int, Node> The nodes as an array
+     */
+    public function toArray(): array {
+        return $this->nodes;
+    }
 }

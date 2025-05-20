@@ -15,6 +15,12 @@ use Daniesy\DOMinator\CssParser;
 class Node {
     use QueriesNodes, ModifiesNode, HandlesAttributes;
 
+    // Define constants for node types
+    public const string NODE_TYPE_TEXT = 'text';
+    public const string NODE_TYPE_COMMENT = 'comment';
+    public const string NODE_TYPE_CDATA = 'cdata';
+    public const string NODE_TYPE_ELEMENT = 'element';
+
     public NodeList $children;
     public ?Node $parent = null;
     public string $doctype = '';
@@ -32,16 +38,28 @@ class Node {
         $this->children = new NodeList();
     }
 
-    public function __get($name) {
-        if ($name === 'innerText') {
-            return $this->getInnerText(); // Use trait's method
-        }
-        return $this->$name ?? null;
+    /**
+     * Magic getter for node properties
+     * 
+     * @param string $name The property name
+     * @return mixed The property value or null
+     */
+    public function __get(string $name): mixed {
+        return match($name) {
+            'innerText' => $this->getInnerText(),
+            default => $this->$name ?? null
+        };
     }
     
-    public function __set($name, $value) {
+    /**
+     * Magic setter for node properties
+     * 
+     * @param string $name The property name
+     * @param mixed $value The value to set
+     */
+    public function __set(string $name, mixed $value): void {
         if ($name === 'innerText') {
-            $this->setInnerText($value); // Use trait's method
+            $this->setInnerText((string)$value);
             return;
         }
         $this->$name = $value;

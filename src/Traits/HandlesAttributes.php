@@ -17,7 +17,7 @@ trait HandlesAttributes
      */
     public function getAttribute(string $name): string | false
     {
-        return $this->hasAttribute($name) ? $this->attributes[$name] : false;
+        return $this->attributes[$name] ?? false;
     }
 
     /**
