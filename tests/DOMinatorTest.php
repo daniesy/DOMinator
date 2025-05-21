@@ -721,4 +721,32 @@ class DOMinatorTest extends TestCase {
         $this->assertNotEquals('= 0 && state.currentQuestionIndex ', $textNodes->first()->innerText);
     }
 
+    public function testPreprocessCallbackIsCalled() {
+        $html = '<div>foo</div>';
+        $called = false;
+        $cb = function($input) use (&$called) {
+            $called = true;
+            return $input;
+        };
+        DOMinator::read($html, false, $cb);
+        $this->assertTrue($called, 'Preprocess callback should be called');
+    }
+
+    public function testPreprocessCallbackCanModifyHtml() {
+        $html = '<div>foo</div>';
+        $cb = function($input) {
+            return str_replace('foo', 'bar', $input);
+        };
+        $root = DOMinator::read($html, false, $cb);
+        $this->assertEquals('bar', $root->children->item(0)->children->item(0)->innerText);
+    }
+
+    public function testPreprocessCallbackCanReturnEmpty() {
+        $html = '<div>foo</div>';
+        $cb = function($input) {
+            return '';
+        };
+        $root = DOMinator::read($html, false, $cb);
+        $this->assertEmpty($root->children);
+    }
 }

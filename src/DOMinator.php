@@ -12,7 +12,10 @@ class DOMinator {
         'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr',
     ];
 
-    public static function read(string $html, bool $normalizeWhitespace = false): Node {
+    public static function read(string $html, bool $normalizeWhitespace = false, ?callable $preprocess = null): Node {
+        if ($preprocess !== null) {
+            $html = $preprocess($html);
+        }
         $html = trim($html);
         $xmlDeclaration = '';
         if (preg_match('/^<\?xml[^>]*\?>/i', $html, $m)) {
