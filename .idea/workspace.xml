@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="421cff60-85d1-4900-9d16-7e7ef27c9a34" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Traits/ModifiesNode.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Traits/ModifiesNode.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/DOMinatorTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/DOMinatorTest.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -66,12 +65,14 @@
   "keyToString": {
     "Composer Script.test.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "PHPUnit.DOMinatorTest.executor": "Run",
     "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemove.executor": "Run",
     "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContent.executor": "Run",
     "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContentSecond.executor": "Run",
     "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithoutContentSecond.executor": "Run",
     "PHPUnit.DOMinatorTest.testGetAllTextNodesAndModify.executor": "Run",
     "PHPUnit.DOMinatorTest.testNBSP.executor": "Run",
+    "PHPUnit.DOMinatorTest.testTextNodeIsAttributeError.executor": "Run",
     "PHPUnit.DOMinatorTest.testToHtmlPrettyPrintSecond.executor": "Run",
     "PHPUnit.QueryTest.testQuerySelectorAllAttribute.executor": "Debug",
     "PHPUnit.ScriptStyleNodeTest.testParseScriptAndStyle.executor": "Run",
@@ -88,7 +89,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="PHPUnit.DOMinatorTest">
+  <component name="RunManager" selected="PHPUnit.DOMinatorTest.testTextNodeIsAttributeError">
     <configuration name="DOMinatorTest" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
       <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" scope="Class" />
       <method v="2" />
@@ -105,17 +106,17 @@
       <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testNBSP" scope="Method" />
       <method v="2" />
     </configuration>
-    <configuration name="DOMinatorTest.testToHtmlPrettyPrintSecond" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
-      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testToHtmlPrettyPrintSecond" scope="Method" />
+    <configuration name="DOMinatorTest.testTextNodeIsAttributeError" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testTextNodeIsAttributeError" scope="Method" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="PHPUnit.DOMinatorTest.testTextNodeIsAttributeError" />
         <item itemvalue="PHPUnit.DOMinatorTest" />
         <item itemvalue="PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemove" />
         <item itemvalue="PHPUnit.DOMinatorTest.testGetAllTextNodesAndModify" />
         <item itemvalue="PHPUnit.DOMinatorTest.testNBSP" />
-        <item itemvalue="PHPUnit.DOMinatorTest.testToHtmlPrettyPrintSecond" />
       </list>
     </recent_temporary>
   </component>
@@ -142,11 +143,22 @@
       <workItem from="1747652076861" duration="985000" />
       <workItem from="1747679602463" duration="454000" />
       <workItem from="1747777918887" duration="1753000" />
-      <workItem from="1747781990713" duration="235000" />
+      <workItem from="1747781990713" duration="1744000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/tests/DOMinatorTest.php</url>
+          <line>721</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
