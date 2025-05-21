@@ -147,8 +147,17 @@ echo $svg->tag;       // 'rect'
 
 ### Parsing Options
 
-- `DOMinator::read($html, $normalizeWhitespace = false)`
+- `DOMinator::read($html, $normalizeWhitespace = false, $preprocess = null)`
+  - Parses the given HTML string into a DOM tree.
   - Supports input with an XML declaration (e.g., `<?xml ...?>`).
+  - **New:** Accepts an optional `$preprocess` callback. If provided, this function will be called with the HTML string before parsing. You can use this to preprocess, sanitize, or transform the HTML as needed.
+  - Example:
+    ```php
+    $root = DOMinator::read($html, false, function($input) {
+        // Preprocess or sanitize $input
+        return str_replace('foo', 'bar', $input);
+    });
+    ```
 - `Node::toHtml($minify = true)`
   - If `$minify` is `false`, outputs pretty-printed HTML with indentation and newlines.
   - If `$minify` is `true` (default), outputs minified HTML.
