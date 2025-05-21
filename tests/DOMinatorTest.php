@@ -672,6 +672,9 @@ class DOMinatorTest extends TestCase {
         $input = "<p>Special characters: &nbsp; &amp; &lt; &gt; &quot; &apos;</p>";
         $root = DOMinator::read($input);
         $this->assertEquals($input, $root->toHtml());
+        $input = "<p>&nbsp;</p>";
+        $root = DOMinator::read($input);
+        $this->assertEquals($input, $root->toHtml());
     }
 
     public function testAccentsCharacters() {
@@ -704,6 +707,18 @@ class DOMinatorTest extends TestCase {
         $source = '<div ngcontent-afp-c35="" class="dropdown" @click.prevent="dropdownVisible = !dropdownVisible"></div>';
         $root = DOMinator::read($source);
         $this->assertEquals($source, $root->toHtml());
+    }
+
+
+    public function testTextNodeIsAttributeError() {
+        $source = '<template x-if="state.currentQuestionIndex >= 0 && state.currentQuestionIndex < questions.length">
+        <div class="fixed top-0 z-50 w-screen bg-gray-800/15 dark:bg-zinc-200/10 h-1 rounded-full overflow-hidden">
+            <div class="h-full bg-blue-500 transition-all duration-300 ease-out" :style="`width: ${percentage * 100}%;`"
+                 :aria-valuenow="percentage * 100" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </template>';
+        $textNodes = DOMinator::read($source)->getAllTextNodes();
+        $this->assertNotEquals('= 0 && state.currentQuestionIndex ', $textNodes->first()->innerText);
     }
 
 }

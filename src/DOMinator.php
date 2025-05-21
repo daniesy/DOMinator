@@ -58,32 +58,74 @@ class DOMinator {
                 $offset += strlen($m[0]);
             }
             // Self-closing or void element
-            elseif (preg_match('/^<([a-zA-Z0-9\-:]+)([^>]*)\s*\/?>/', $substr, $m)) {
-                $tag = strtolower($m[1]);
-                $attrStr = $m[2];
-                $attrs = self::parseAttributes($attrStr);
-                $namespace = '';
-                if (strpos($tag, ':') !== false) {
-                    [$namespace, $tag] = explode(':', $tag, 2);
-                }
-                $isVoid = in_array($tag, self::$voidElements) || substr($m[0], -2) === '/>';
-                // Handle unclosed tags for certain elements (li, p, td, th, tr, option, etc.)
-                $autoCloseTags = ['li', 'p', 'td', 'th', 'tr', 'option', 'dt', 'dd'];
-                if (in_array($tag, $autoCloseTags)) {
-                    // If the top of the stack is the same tag, close it first
-                    if (end($stack)->tag === $tag) {
-                        array_pop($stack);
+            else if (substr($substr, 0, 1) === '<') {
+                // Robust tag boundary parser: find the closing '>' not inside quotes
+                $inSingle = $inDouble = false;
+                $i = 1;
+                $lenSub = strlen($substr);
+                for (; $i < $lenSub; $i++) {
+                    $c = $substr[$i];
+                    if ($c === "'" && !$inDouble) {
+                        $inSingle = !$inSingle;
+                    } elseif ($c === '"' && !$inSingle) {
+                        $inDouble = !$inDouble;
+                    } elseif ($c === '>' && !$inSingle && !$inDouble) {
+                        break;
                     }
                 }
-                $node = new Node($tag, $attrs, false, '', false, false, $namespace);
-                end($stack)->appendChild($node);
-                $offset += strlen($m[0]);
-                if (!$isVoid) {
-                    $stack[] = $node;
+                if ($i < $lenSub) {
+                    $tagChunk = substr($substr, 0, $i + 1);
+                    // Check if this is a closing tag (e.g., </div>)
+                    if (preg_match('/^<\s*\//', $tagChunk)) {
+                        // Handle as closing tag
+                        if (preg_match('/^<\s*\/([@a-zA-Z0-9_\-:.]+)\s*>$/', $tagChunk, $m)) {
+                            $closeTag = strtolower($m[1]);
+                            // Pop the stack until we find the matching tag or root
+                            for ($j = count($stack) - 1; $j > 0; $j--) {
+                                if ($stack[$j]->tag === $closeTag) {
+                                    $stack = array_slice($stack, 0, $j);
+                                    break;
+                                }
+                            }
+                        }
+                        $offset += strlen($tagChunk);
+                        continue;
+                    }
+                    if (preg_match('/^<([@a-zA-Z0-9_:.-]+)(.*?)(\/)?\s*>$/s', rtrim($tagChunk, '>') . '>', $m)) {
+                        $tag = strtolower($m[1]);
+                        $attrStr = $m[2];
+                        $attrs = self::parseAttributes($attrStr);
+                        $namespace = '';
+                        if (strpos($tag, ':') !== false) {
+                            [$namespace, $tag] = explode(':', $tag, 2);
+                        }
+                        $isVoid = in_array($tag, self::$voidElements) || substr($tagChunk, -2) === '/>';
+                        $autoCloseTags = ['li', 'p', 'td', 'th', 'tr', 'option', 'dt', 'dd'];
+                        if (in_array($tag, $autoCloseTags)) {
+                            if (end($stack)->tag === $tag) {
+                                array_pop($stack);
+                            }
+                        }
+                        $node = new Node($tag, $attrs, false, '', false, false, $namespace);
+                        end($stack)->appendChild($node);
+                        $offset += strlen($tagChunk);
+                        if (!$isVoid) {
+                            $stack[] = $node;
+                        }
+                        continue;
+                    } else {
+                        // Tag chunk did not match a tag, skip one character to avoid infinite loop
+                        $offset++;
+                        continue;
+                    }
+                } else {
+                    // No closing > found, skip one character to avoid infinite loop
+                    $offset++;
+                    continue;
                 }
             }
             // Closing tag
-            elseif (preg_match('/^<\/([a-zA-Z0-9\-:]+)>/', $substr, $m)) {
+            elseif (preg_match('/^<\/([@a-zA-Z0-9_\-:.]+)>/', $substr, $m)) {
                 $closeTag = strtolower($m[1]);
                 // Pop the stack until we find the matching tag or root
                 for ($i = count($stack) - 1; $i > 0; $i--) {
