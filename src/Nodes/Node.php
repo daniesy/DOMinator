@@ -1,4 +1,5 @@
 <?php
+
 namespace Daniesy\DOMinator\Nodes;
 
 use Daniesy\DOMinator\Traits\HandlesAttributes;
@@ -12,7 +13,8 @@ use Daniesy\DOMinator\CssParser;
  * @property string $innerText
  */
 
-class Node {
+class Node
+{
     use QueriesNodes, ModifiesNode, HandlesAttributes;
 
     // Define constants for node types
@@ -20,6 +22,45 @@ class Node {
     public const string NODE_TYPE_COMMENT = 'comment';
     public const string NODE_TYPE_CDATA = 'cdata';
     public const string NODE_TYPE_ELEMENT = 'element';
+
+    // Tags considered inline/phrasing for whitespace sensitivity
+    private static array $inlineTags = [
+        'a',
+        'abbr',
+        'b',
+        'bdi',
+        'bdo',
+        'br',
+        'cite',
+        'code',
+        'data',
+        'dfn',
+        'em',
+        'i',
+        'img',
+        'input',
+        'kbd',
+        'label',
+        'mark',
+        'q',
+        'rp',
+        'rt',
+        'ruby',
+        's',
+        'samp',
+        'small',
+        'span',
+        'strong',
+        'sub',
+        'sup',
+        'time',
+        'u',
+        'var',
+        'wbr',
+        'select',
+        'textarea',
+        'button'
+    ];
 
     public NodeList $children;
     public ?Node $parent = null;
@@ -44,27 +85,29 @@ class Node {
      * @param string $name The property name
      * @return mixed The property value or null
      */
-    public function __get(string $name): mixed {
-        return match($name) {
+    public function __get(string $name): mixed
+    {
+        return match ($name) {
             'innerText' => $this->getInnerText(),
             default => $this->$name ?? null
         };
     }
-    
+
     /**
      * Magic setter for node properties
      * 
      * @param string $name The property name
      * @param mixed $value The value to set
      */
-    public function __set(string $name, mixed $value): void {
+    public function __set(string $name, mixed $value): void
+    {
         if ($name === 'innerText') {
             $this->setInnerText((string)$value);
             return;
         }
         $this->$name = $value;
     }
-    
+
     public function toHtml(bool $minify = true, int $level = 0): string
     {
         $indent = ($minify ? '' : str_repeat("    ", $level));
@@ -78,15 +121,17 @@ class Node {
             if (isset($this->doctype) && $this->doctype) {
                 $html .= $this->doctype . $newline;
             }
+            // Decide if it's safe to pretty print children at the root level
+            $canPrettyRoot = !$minify && $this->canSafelyPrettyPrintChildren();
             foreach ($this->children as $child) {
-                // Skip whitespace-only text nodes when pretty printing
-                if (!$minify && $child->isText && trim($child->innerText) === '') {
+                // Skip whitespace-only text nodes only when it's safe to pretty print
+                if ($canPrettyRoot && !$minify && $child->isText && trim($child->innerText) === '') {
                     continue;
                 }
                 $html .= $child->toHtml($minify, $minify ? 0 : $level);
-                if (!$minify) $html .= $newline;
+                if ($canPrettyRoot && !$minify) $html .= $newline;
             }
-            return $minify ? $html : rtrim($html, "\n");
+            return $minify ? $html : ($canPrettyRoot ? rtrim($html, "\n") : $html);
         }
         // If this is the <html> node and has a doctype or xmlDeclaration, prepend them
         $html = '';
@@ -126,22 +171,65 @@ class Node {
                     $html .= $this->children->item(0)->toHtml($minify, $level + 1);
                 }
             } else {
-                if (!$minify) $html .= $newline;
-                foreach ($this->children as $child) {
-                    // Skip whitespace-only text nodes when pretty printing
-                    if (!$minify && $child->isText && trim($child->innerText) === '') {
-                        continue;
+                // Only pretty print (add newlines/indentation) when it's safe and won't affect rendering
+                $canPretty = !$minify && $this->canSafelyPrettyPrintChildren();
+                if ($canPretty) {
+                    $html .= $newline;
+                    foreach ($this->children as $child) {
+                        // Skip whitespace-only text nodes when pretty printing safely
+                        if ($child->isText && trim($child->innerText) === '') {
+                            continue;
+                        }
+                        $html .= $child->toHtml($minify, $level + 1);
+                        $html .= $newline;
                     }
-                    $html .= $child->toHtml($minify, $level + 1);
-                    if (!$minify) $html .= $newline;
+                    $html .= $indent;
+                } else {
+                    // Unsafe to pretty print: concatenate children without introducing newlines
+                    foreach ($this->children as $child) {
+                        // Do not drop whitespace-only text nodes here; they may be significant
+                        // Reset indentation to avoid inserting spaces without a preceding newline
+                        $html .= $child->toHtml($minify, 0);
+                    }
                 }
-                $html .= $minify ? '' : $indent;
             }
         } else {
             $html .= str_replace('&#039;', '&apos;', htmlspecialchars($this->innerText, ENT_QUOTES | ENT_HTML5));
         }
         $html .= "</{$this->tag}>";
         return $html;
+    }
+
+    // Determine if this element is inline/phrasing
+    private function isInlineElement(): bool
+    {
+        return in_array(strtolower($this->tag), self::$inlineTags, true);
+    }
+
+    // Determine if it's safe to pretty print (insert newlines/indentation) among children
+    // Safe when:
+    // - This element itself is not inline, and
+    // - There are no text children with non-whitespace content, and
+    // - All element children are not inline (i.e., block-like or unknown non-inline like SVG)
+    // - There are no comment/CDATA nodes mixed among inline/text content (to be conservative)
+    private function canSafelyPrettyPrintChildren(): bool
+    {
+        $hasSignificantText = false;
+        foreach ($this->children as $child) {
+            if ($child->isText) {
+                if (preg_match('/\S/u', $child->innerText)) {
+                    $hasSignificantText = true;
+                    break;
+                }
+                continue;
+            }
+            if ($child->tag && in_array(strtolower($child->tag), self::$inlineTags, true)) {
+                // Inline child present -> pretty printing could introduce visible spaces
+                return false;
+            }
+        }
+        if ($hasSignificantText) return false;
+        return true;
     }
 
     public function toInlinedHtml(bool $minify = true): string
@@ -160,7 +248,7 @@ class Node {
                 }
             }
             $parsed = CssParser::parse($css);
-            $allCssRules[] = [ 'node' => $styleNode, 'rules' => $parsed ];
+            $allCssRules[] = ['node' => $styleNode, 'rules' => $parsed];
         }
         // Map: selector => [rule, props, raw, styleNode]
         $selectorMap = [];
@@ -220,7 +308,7 @@ class Node {
                 $this->attributes['style'] = $styleValue;
             }
         }
-        
+
         if (isset($this->children)) {
             foreach ($this->children as $child) {
                 if ($child) {
@@ -275,7 +363,7 @@ class Node {
         );
         $clone->doctype = $this->doctype ?? '';
         $clone->xmlDeclaration = $this->xmlDeclaration ?? '';
-        
+
         if (isset($this->children)) {
             foreach ($this->children as $child) {
                 if ($child) {

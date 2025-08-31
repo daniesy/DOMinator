@@ -1,11 +1,14 @@
 <?php
+
 use PHPUnit\Framework\TestCase;
 use Daniesy\DOMinator\DOMinator;
 use Daniesy\DOMinator\Nodes\StyleNode;
 use Daniesy\DOMinator\Nodes\ScriptNode;
 
-class DOMinatorTest extends TestCase {
-    public function testInvalidHtml() {
+class DOMinatorTest extends TestCase
+{
+    public function testInvalidHtml()
+    {
         $html = '<span><span>Test</span></span>';
         $root = DOMinator::read($html);
         $result = $root->toHtml();
@@ -17,7 +20,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals($html, $result);
     }
 
-    public function testHtmlDocument() {
+    public function testHtmlDocument()
+    {
         $html = '<!DOCTYPE html><html><head><title>Test</title></head><body><div id="main"><p>Hello <b>World</b></p></div></body></html>';
         $root = DOMinator::read($html);
         $this->assertEquals('html', $root->tag);
@@ -27,7 +31,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals($html, $root->toHtml());
     }
 
-    public function testParseAndExport() {
+    public function testParseAndExport()
+    {
         $html = '<div id="main"><p>Hello <b>World</b></p></div>';
         $root = DOMinator::read($html);
         $exported = '';
@@ -38,7 +43,8 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<p>Hello <b>World</b></p>', $exported);
     }
 
-    public function testQuerySelectorAllByClass() {
+    public function testQuerySelectorAllByClass()
+    {
         $html = '<div><span class="foo">A</span><span class="bar">B</span></div>';
         $root = DOMinator::read($html);
         $nodes = $root->querySelectorAll('.foo');
@@ -47,7 +53,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('A', $nodes->item(0)->innerText);
     }
 
-    public function testSetInnerText() {
+    public function testSetInnerText()
+    {
         $html = '<div><span class="foo">A</span></div>';
         $root = DOMinator::read($html);
         $nodes = $root->querySelectorAll('.foo');
@@ -55,7 +62,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('B', $nodes->item(0)->innerText);
     }
 
-    public function testSetAndRemoveAttribute() {
+    public function testSetAndRemoveAttribute()
+    {
         $html = '<div><span class="foo">A</span></div>';
         $root = DOMinator::read($html);
         $nodes = $root->querySelectorAll('span');
@@ -65,7 +73,8 @@ class DOMinatorTest extends TestCase {
         $this->assertFalse($nodes->item(0)->hasAttribute('id'));;
     }
 
-    public function testRemoveNode() {
+    public function testRemoveNode()
+    {
         $html = '<div><span class="foo">A</span><span>B</span></div>';
         $root = DOMinator::read($html);
         $nodes = $root->querySelectorAll('.foo');
@@ -75,7 +84,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('B', $spans->item(0)->innerText);
     }
 
-    public function testSelfClosingAndVoidElements() {
+    public function testSelfClosingAndVoidElements()
+    {
         $html = '<div>foo<br/><img src="a.png"><hr></div>';
         $root = DOMinator::read($html);
         $this->assertEquals('div', $root->children->item(0)->tag);
@@ -84,7 +94,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('hr', $root->children->item(0)->children->item(3)->tag);
     }
 
-    public function testHtmlComments() {
+    public function testHtmlComments()
+    {
         $html = '<div><!-- comment here --><span>ok</span></div>';
         $root = DOMinator::read($html);
         $comment = $root->children->item(0)->children->item(0);
@@ -93,7 +104,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('<!-- comment here -->', $comment->toHtml());
     }
 
-    public function testScriptAndStyleRawContent() {
+    public function testScriptAndStyleRawContent()
+    {
         $html = '<script>if (a < b) { alert("x"); }</script><style>body { color: red; }</style>';
         $root = DOMinator::read($html);
         $this->assertEquals('script', $root->children->item(0)->tag);
@@ -102,7 +114,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('body { color: red; }', $root->children->item(1)->children->item(0)->innerText);
     }
 
-    public function testEntityDecoding() {
+    public function testEntityDecoding()
+    {
         $html = '<div title="&amp; &lt; &gt;">&amp; &lt; &gt;</div>';
         $root = DOMinator::read($html);
         $div = $root->children->item(0);
@@ -110,7 +123,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('& < >', $div->children->item(0)->innerText);
     }
 
-    public function testCdataSection() {
+    public function testCdataSection()
+    {
         $html = '<![CDATA[Some <b>unparsed</b> data]]>';
         $root = DOMinator::read($html);
         $cdata = $root->children->item(0);
@@ -119,7 +133,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('<![CDATA[Some <b>unparsed</b> data]]>', $cdata->toHtml());
     }
 
-    public function testAttributeQuoting() {
+    public function testAttributeQuoting()
+    {
         $html = "<div a='1' b=2 c=\"3\">x</div>";
         $root = DOMinator::read($html);
         $div = $root->children->item(0);
@@ -128,13 +143,15 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('3', $div->attributes['c']);
     }
 
-    public function testDoctypeVariants() {
+    public function testDoctypeVariants()
+    {
         $html = "<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'><svg></svg>";
         $root = DOMinator::read($html);
         $this->assertStringContainsString('DOCTYPE svg', $root->doctype);
     }
 
-    public function testNamespaceSupport() {
+    public function testNamespaceSupport()
+    {
         $html = '<svg:rect width="100" height="100"/>';
         $root = DOMinator::read($html);
         $svg = $root->children->item(0);
@@ -142,7 +159,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('rect', $svg->tag);
     }
 
-    public function testWhitespaceNormalization() {
+    public function testWhitespaceNormalization()
+    {
         // Use real newline and tab characters
         $html = "<div>   a   b\n\t   c </div>";
         $html = str_replace(['\\n', '\\t'], ["\n", "\t"], $html);
@@ -150,7 +168,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals(' a b c ', $root->children->item(0)->children->item(0)->innerText);
     }
 
-    public function testMalformedHtmlRecovery() {
+    public function testMalformedHtmlRecovery()
+    {
         $html = '<div><span>foo';
         $root = DOMinator::read($html);
         $this->assertEquals('div', $root->children->item(0)->tag);
@@ -158,7 +177,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('foo', $root->children->item(0)->children->item(0)->children->item(0)->innerText);
     }
 
-    public function testMultipleNestedElements() {
+    public function testMultipleNestedElements()
+    {
         $html = '<div><section><article><p>Text</p></article></section></div>';
         $root = DOMinator::read($html);
         $this->assertEquals('div', $root->children->item(0)->tag);
@@ -168,7 +188,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('Text', $root->children->item(0)->children->item(0)->children->item(0)->children->item(0)->children->item(0)->innerText);
     }
 
-    public function testUnclosedTags() {
+    public function testUnclosedTags()
+    {
         $html = '<ul><li>One<li>Two<li>Three</ul>';
         $root = DOMinator::read($html);
         $ul = $root->children->item(0);
@@ -179,7 +200,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('Three', $ul->children->item(2)->children->item(0)->innerText);
     }
 
-    public function testAttributesWithoutValues() {
+    public function testAttributesWithoutValues()
+    {
         $html = '<input type="checkbox" checked>';
         $root = DOMinator::read($html);
         $input = $root->children->item(0);
@@ -189,14 +211,16 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('', $input->attributes['checked']);
     }
 
-    public function testMultipleClasses() {
+    public function testMultipleClasses()
+    {
         $html = '<div class="foo bar baz">x</div>';
         $root = DOMinator::read($html);
         $div = $root->children->item(0);
         $this->assertEquals('foo bar baz', $div->attributes['class']);
     }
 
-    public function testDeeplyNested() {
+    public function testDeeplyNested()
+    {
         $html = str_repeat('<div>', 50) . 'end' . str_repeat('</div>', 50);
         $root = DOMinator::read($html);
         $node = $root->children->item(0);
@@ -208,7 +232,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('end', $node->children->item(0)->innerText);
     }
 
-    public function testHtmlWithCommentsAndCdata() {
+    public function testHtmlWithCommentsAndCdata()
+    {
         $html = '<div><!--comment--><![CDATA[raw]]></div>';
         $root = DOMinator::read($html);
         $div = $root->children->item(0);
@@ -218,7 +243,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('raw', $div->children->item(1)->innerText);
     }
 
-    public function testScriptWithTagsInside() {
+    public function testScriptWithTagsInside()
+    {
         $html = '<script>if (x < 1) { document.write("<b>bold</b>"); }</script>';
         $root = DOMinator::read($html);
         $script = $root->children->item(0);
@@ -226,14 +252,16 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<b>bold</b>', $script->children->item(0)->innerText);
     }
 
-    public function testHtmlEntitiesInAttributes() {
+    public function testHtmlEntitiesInAttributes()
+    {
         $html = '<a href="test.php?x=1&amp;y=2">link</a>';
         $root = DOMinator::read($html);
         $a = $root->children->item(0);
         $this->assertEquals('test.php?x=1&y=2', $a->attributes['href']);
     }
 
-    public function testNamespaceAndAttributes() {
+    public function testNamespaceAndAttributes()
+    {
         $html = '<svg:circle cx="50" cy="50" r="40"/>';
         $root = DOMinator::read($html);
         $svg = $root->children->item(0);
@@ -244,7 +272,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('40', $svg->attributes['r']);
     }
 
-    public function testNestedVoidElements() {
+    public function testNestedVoidElements()
+    {
         $html = '<div><img src="a.png"><br><hr><input type="text"></div>';
         $root = DOMinator::read($html);
         $div = $root->children->item(0);
@@ -256,7 +285,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('text', $div->children->item(3)->attributes['type']);
     }
 
-    public function testMixedContent() {
+    public function testMixedContent()
+    {
         $html = '<p>Hello <b>World</b>! <i>How</i> are <span>you</span>?</p>';
         $root = DOMinator::read($html);
         $p = $root->children->item(0);
@@ -273,7 +303,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('?', $p->children->item(6)->innerText);
     }
 
-    public function testDeeplyBrokenHtml() {
+    public function testDeeplyBrokenHtml()
+    {
         $html = '<div><ul><li>One<li>Two<li>Three</ul><p>Para';
         $root = DOMinator::read($html);
         $div = $root->children->item(0);
@@ -284,7 +315,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('Para', $div->children->item(1)->children->item(0)->innerText);
     }
 
-    public function testScriptWithCdataAndComment() {
+    public function testScriptWithCdataAndComment()
+    {
         $html = '<script><![CDATA[var x = 1;]]><!-- comment --></script>';
         $root = DOMinator::read($html);
         $script = $root->children->item(0);
@@ -293,14 +325,16 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('comment', $script->children->item(0)->toHtml());
     }
 
-    public function testAttributeWithSpecialCharacters() {
+    public function testAttributeWithSpecialCharacters()
+    {
         $html = '<div data-json="{&quot;foo&quot;:1, &quot;bar&quot;:2}"></div>';
         $root = DOMinator::read($html);
         $div = $root->children->item(0);
         $this->assertEquals('{"foo":1, "bar":2}', $div->attributes['data-json']);
     }
 
-    public function testEmptyElements() {
+    public function testEmptyElements()
+    {
         $html = '<div></div><span></span><p></p>';
         $root = DOMinator::read($html);
         $this->assertEquals('div', $root->children->item(0)->tag);
@@ -311,7 +345,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEmpty($root->children->item(2)->children);
     }
 
-    public function testMultipleRootElements() {
+    public function testMultipleRootElements()
+    {
         $html = '<header>Header</header><main>Main</main><footer>Footer</footer>';
         $root = DOMinator::read($html);
         $this->assertEquals('header', $root->children->item(0)->tag);
@@ -319,7 +354,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('footer', $root->children->item(2)->tag);
     }
 
-    public function testCaseInsensitiveTags() {
+    public function testCaseInsensitiveTags()
+    {
         $html = '<DIV><SpAn>Test</SpAn></DIV>';
         $root = DOMinator::read($html);
         $this->assertEquals('div', $root->children->item(0)->tag);
@@ -327,7 +363,19 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('Test', $root->children->item(0)->children->item(0)->children->item(0)->innerText);
     }
 
-    public function testNamespaceWithHyphen() {
+    public function testSimpleHtml()
+    {
+        $html = '<div>a</div>';
+        $root = DOMinator::read($html);
+        $this->assertEquals('<div>a</div>', $root->toHtml());
+
+        $html = '<div><p>p</p>a</div>';
+        $root = DOMinator::read($html);
+        $this->assertEquals('<div><p>p</p>a</div>', $root->toHtml());
+    }
+
+    public function testNamespaceWithHyphen()
+    {
         $html = '<xlink:href>value</xlink:href>';
         $root = DOMinator::read($html);
         $xlink = $root->children->item(0);
@@ -336,7 +384,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('value', $xlink->children->item(0)->innerText);
     }
 
-    public function testPerformanceLargeFlatHtml() {
+    public function testPerformanceLargeFlatHtml()
+    {
         $html = '<ul>' . str_repeat('<li>Item</li>', 10000) . '</ul>';
         $start = microtime(true);
         $root = DOMinator::read($html);
@@ -347,7 +396,8 @@ class DOMinatorTest extends TestCase {
         $this->assertLessThan(2, $duration, 'Parsing 10,000 flat elements should be fast');
     }
 
-    public function testPerformanceLargeNestedHtml() {
+    public function testPerformanceLargeNestedHtml()
+    {
         $html = '';
         for ($i = 0; $i < 2000; $i++) {
             $html .= '<div>';
@@ -369,7 +419,8 @@ class DOMinatorTest extends TestCase {
         $this->assertLessThan(2, $duration, 'Parsing 2000 nested elements should be fast');
     }
 
-    public function testPerformanceManyAttributes() {
+    public function testPerformanceManyAttributes()
+    {
         $attrs = [];
         for ($i = 0; $i < 100; $i++) {
             $attrs[] = 'data-x' . $i . '="' . $i . '"';
@@ -386,7 +437,8 @@ class DOMinatorTest extends TestCase {
         $this->assertLessThan(1, $duration, 'Parsing 100 attributes should be fast');
     }
 
-    public function testGetAllTextNodesAndModify() {
+    public function testGetAllTextNodesAndModify()
+    {
         $html = '<div>Hello <b>World</b> and <i>Universe</i></div>';
         $root = DOMinator::read($html); // Assuming Node::parse exists, or use HtmlParser if needed
         $textNodes = $root->getAllTextNodes();
@@ -395,7 +447,7 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('World', $textNodes->item(1)->innerText);
         $this->assertEquals(' and ', $textNodes->item(2)->innerText);
         $this->assertEquals('Universe', $textNodes->item(3)->innerText);
-    
+
         // Modify text nodes
         $textNodes->first()->innerText = 'Hi ';
         $textNodes->item(1)->innerText = 'Earth';
@@ -409,7 +461,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('i', $textNodes->item(3)->parent->tag);
     }
 
-    public function testGetAllCommentNodesAndRemove() {
+    public function testGetAllCommentNodesAndRemove()
+    {
         $html = '<div><!-- comment1 --><span>ok</span><!-- comment2 --></div>';
         $root = DOMinator::read($html);
         $comments = $root->getAllCommentNodes();
@@ -426,7 +479,8 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<span>ok</span>', $htmlOut);
     }
 
-    public function testGetAllCommentNodesAndRemoveWithContent() {
+    public function testGetAllCommentNodesAndRemoveWithContent()
+    {
         $html = '<div>foo <!-- comment1 -->bar<span>ok</span><!-- comment2 -->baz</div>';
         $root = DOMinator::read($html);
         $comments = $root->getAllCommentNodes();
@@ -446,7 +500,8 @@ class DOMinatorTest extends TestCase {
         $this->assertStringNotContainsString('comment2', $htmlOut);
     }
 
-    public function testGetAllCommentNodesAndRemoveWithContentSecond() {
+    public function testGetAllCommentNodesAndRemoveWithContentSecond()
+    {
         $html = '<!--[if mso]><div style="mso-hide: all"><![endif]--><a href="#" class="call-to-action-button" style="text-decoration:none;">test</a>';
         $root = DOMinator::read($html);
         $comments = $root->getAllCommentNodes();
@@ -463,7 +518,8 @@ class DOMinatorTest extends TestCase {
     }
 
 
-    public function testQuerySelectorAllAndBulkEdit() {
+    public function testQuerySelectorAllAndBulkEdit()
+    {
         $html = '<div><p>One</p><p>Two</p><p>Three</p></div>';
         $root = DOMinator::read($html);
         $nodes = $root->querySelectorAll('p');
@@ -482,7 +538,8 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<p>THREE</p>', $htmlOut);
     }
 
-    public function testQuerySelectorAllNestedBulkEdit() {
+    public function testQuerySelectorAllNestedBulkEdit()
+    {
         $html = '<section><div><p>First</p></div><div><p>Second</p></div></section>';
         $root = DOMinator::read($html);
         $nodes = $root->querySelectorAll('p');
@@ -494,7 +551,8 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<p>Para 1</p>', $htmlOut);
     }
 
-    public function testAttributeSelectorExactMatch() {
+    public function testAttributeSelectorExactMatch()
+    {
         $html = '<div data-role="admin">A</div><div data-role="user">B</div>';
         $root = DOMinator::read($html);
         $nodes = $root->querySelectorAll('[data-role="admin"]');
@@ -502,7 +560,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('A', $nodes->item(0)->innerText);
     }
 
-    public function testAttributeSelectorSpaceSeparatedWord() {
+    public function testAttributeSelectorSpaceSeparatedWord()
+    {
         $html = '<div data-role="admin">A</div><div data-role="super admin">B</div><div data-role="administrator">C</div>';
         $root = DOMinator::read($html);
         $nodes = $root->querySelectorAll('[data-role~="admin"]');
@@ -511,7 +570,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('B', $nodes->item(1)->innerText);
     }
 
-    public function testAttributeSelectorSubstring() {
+    public function testAttributeSelectorSubstring()
+    {
         $html = '<div data-role="admin">A</div><div data-role="super-admin">B</div><div data-role="administrator">C</div>';
         $root = DOMinator::read($html);
         $nodes = $root->querySelectorAll('[data-role*="admin"]');
@@ -521,7 +581,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals('C', $nodes->item(2)->innerText);
     }
 
-    public function testXmlDeclarationPreserved() {
+    public function testXmlDeclarationPreserved()
+    {
         $xmls = [
             '<?xml version="1.0"?>',
             '<?xml version="1.0" encoding="utf-8"?>',
@@ -538,7 +599,8 @@ class DOMinatorTest extends TestCase {
         }
     }
 
-    public function testXmlDeclarationWithDoctype() {
+    public function testXmlDeclarationWithDoctype()
+    {
         $xmlDecl = '<?xml version="1.0" encoding="utf-8"?>';
         $doctype = '<!DOCTYPE html>';
         $html = $xmlDecl . $doctype . '<html><body>Test</body></html>';
@@ -551,11 +613,12 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<body>Test</body>', $exported);
     }
 
-    public function testToHtmlPrettyPrint() {
+    public function testToHtmlPrettyPrint()
+    {
         $html = '<div><span>A</span><span>B</span></div>';
         $root = DOMinator::read($html);
         $pretty = $root->toHtml(false);
-        $expected = "<div>\n    <span>A</span>\n    <span>B</span>\n</div>";
+        $expected = "<div><span>A</span><span>B</span></div>";
         $this->assertEquals($expected, trim($pretty));
         // Minified output should not have newlines or indentation
         $minified = $root->toHtml(true);
@@ -563,13 +626,14 @@ class DOMinatorTest extends TestCase {
         $this->assertStringNotContainsString("    ", $minified);
     }
 
-    public function testToHtmlPrettyPrintWithXmlDeclarationAndDoctype() {
+    public function testToHtmlPrettyPrintWithXmlDeclarationAndDoctype()
+    {
         $xmlDecl = '<?xml version="1.0" encoding="utf-8"?>';
         $doctype = '<!DOCTYPE html>';
         $html = $xmlDecl . $doctype . '<html><body><div><span>A</span></div></body></html>';
         $root = DOMinator::read($html);
         $pretty = $root->toHtml(false);
-        $expected = $xmlDecl . "\n" . $doctype . "\n<html>\n    <body>\n        <div>\n            <span>A</span>\n        </div>\n    </body>\n</html>";
+        $expected = $xmlDecl . "\n" . $doctype . "\n<html>\n    <body>\n        <div><span>A</span></div>\n    </body>\n</html>";
         $this->assertEquals($expected, trim($pretty));
     }
 
@@ -600,9 +664,10 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals($expected, $pretty);
     }
 
-    public function testToInlinedHtmlSimpleSelectors() {
+    public function testToInlinedHtmlSimpleSelectors()
+    {
         $html = '<style>div { color: red; } .foo { font-weight: bold; } #bar { text-align: center; }</style>'
-            .'<div class="foo" id="bar">A</div><div>B</div>';
+            . '<div class="foo" id="bar">A</div><div>B</div>';
         $root = DOMinator::read($html);
         $inlined = $root->toInlinedHtml();
         $this->assertStringNotContainsString('<style>', $inlined);
@@ -610,7 +675,8 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<div style="color: red;">B</div>', $inlined);
     }
 
-    public function testToInlinedHtmlPrettyPrint() {
+    public function testToInlinedHtmlPrettyPrint()
+    {
         $html = '<style>.x { color: blue; }</style><span class="x">T</span>';
         $root = DOMinator::read($html);
         $pretty = $root->toInlinedHtml(false);
@@ -619,9 +685,10 @@ class DOMinatorTest extends TestCase {
         $this->assertStringNotContainsString('<style>', $pretty);
     }
 
-    public function testToInlinedHtmlKeepsUnmatchedAndGlobalRules() {
+    public function testToInlinedHtmlKeepsUnmatchedAndGlobalRules()
+    {
         $html = '<style>div { color: red; } .foo { font-weight: bold; } @media (max-width:600px) { body { background: #fff; } } .unused { color: green; }</style>'
-            .'<div class="foo">A</div>';
+            . '<div class="foo">A</div>';
         $root = DOMinator::read($html);
         $inlined = $root->toInlinedHtml();
         // Inlined rules should be removed
@@ -635,9 +702,10 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<div class="foo" style="color: red;font-weight: bold;">A</div>', $inlined);
     }
 
-    public function testToInlinedHtmlRemovesStyleTagIfAllRulesInlined() {
+    public function testToInlinedHtmlRemovesStyleTagIfAllRulesInlined()
+    {
         $html = '<style>div { color: red; } .foo { font-weight: bold; }</style>'
-            .'<div class="foo">A</div><div>B</div>';
+            . '<div class="foo">A</div><div>B</div>';
         $root = DOMinator::read($html);
         $inlined = $root->toInlinedHtml();
         // All rules are inlined, so <style> should be removed
@@ -646,9 +714,10 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<div style="color: red;">B</div>', $inlined);
     }
 
-    public function testToInlinedHtmlKeepsStyleTagWithOnlyGlobalRules() {
+    public function testToInlinedHtmlKeepsStyleTagWithOnlyGlobalRules()
+    {
         $html = '<style>@media (max-width:600px) { body { background: #fff; } } @font-face { font-family: test; src: url(test.woff); }</style>'
-            .'<div>A</div>';
+            . '<div>A</div>';
         $root = DOMinator::read($html);
         $inlined = $root->toInlinedHtml();
         // No rules are inlined, so <style> should be kept as-is
@@ -658,7 +727,8 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<div>A</div>', $inlined);
     }
 
-    public function testToInlinedHtmlKeepsStyleTagWithUnusedSelector() {
+    public function testToInlinedHtmlKeepsStyleTagWithUnusedSelector()
+    {
         $html = '<style>.unused { color: green; }</style><div>B</div>';
         $root = DOMinator::read($html);
         $inlined = $root->toInlinedHtml();
@@ -668,7 +738,8 @@ class DOMinatorTest extends TestCase {
         $this->assertStringContainsString('<div>B</div>', $inlined);
     }
 
-    public function testHTMLCharacterEntities() {
+    public function testHTMLCharacterEntities()
+    {
         $input = "<p>Special characters: &nbsp; &amp; &lt; &gt; &quot; &apos;</p>";
         $root = DOMinator::read($input);
         $this->assertEquals($input, $root->toHtml());
@@ -677,7 +748,8 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals($input, $root->toHtml());
     }
 
-    public function testAccentsCharacters() {
+    public function testAccentsCharacters()
+    {
         $input = "<p>Accents: é è ê ë à â ä î ï ô ö û ü</p>";
         $root = DOMinator::read($input);
         $this->assertEquals($input, $root->toHtml());
@@ -703,14 +775,16 @@ class DOMinatorTest extends TestCase {
         $this->assertEquals($japaneseInput, $root->toHtml());
     }
 
-    public function testComplexAttributes() {
+    public function testComplexAttributes()
+    {
         $source = '<div ngcontent-afp-c35="" class="dropdown" @click.prevent="dropdownVisible = !dropdownVisible"></div>';
         $root = DOMinator::read($source);
         $this->assertEquals($source, $root->toHtml());
     }
 
 
-    public function testTextNodeIsAttributeError() {
+    public function testTextNodeIsAttributeError()
+    {
         $source = '<template x-if="state.currentQuestionIndex >= 0 && state.currentQuestionIndex < questions.length">
         <div class="fixed top-0 z-50 w-screen bg-gray-800/15 dark:bg-zinc-200/10 h-1 rounded-full overflow-hidden">
             <div class="h-full bg-blue-500 transition-all duration-300 ease-out" :style="`width: ${percentage * 100}%;`"
@@ -721,10 +795,11 @@ class DOMinatorTest extends TestCase {
         $this->assertNotEquals('= 0 && state.currentQuestionIndex ', $textNodes->first()->innerText);
     }
 
-    public function testPreprocessCallbackIsCalled() {
+    public function testPreprocessCallbackIsCalled()
+    {
         $html = '<div>foo</div>';
         $called = false;
-        $cb = function($input) use (&$called) {
+        $cb = function ($input) use (&$called) {
             $called = true;
             return $input;
         };
@@ -732,21 +807,34 @@ class DOMinatorTest extends TestCase {
         $this->assertTrue($called, 'Preprocess callback should be called');
     }
 
-    public function testPreprocessCallbackCanModifyHtml() {
+    public function testPreprocessCallbackCanModifyHtml()
+    {
         $html = '<div>foo</div>';
-        $cb = function($input) {
+        $cb = function ($input) {
             return str_replace('foo', 'bar', $input);
         };
         $root = DOMinator::read($html, false, $cb);
         $this->assertEquals('bar', $root->children->item(0)->children->item(0)->innerText);
     }
 
-    public function testPreprocessCallbackCanReturnEmpty() {
+    public function testPreprocessCallbackCanReturnEmpty()
+    {
         $html = '<div>foo</div>';
-        $cb = function($input) {
+        $cb = function ($input) {
             return '';
         };
         $root = DOMinator::read($html, false, $cb);
         $this->assertEmpty($root->children);
+    }
+
+    public function testCustomHtml()
+    {
+        $html = '<p style="font-family: verdana; font-size: 14px; color: #555555; line-height: 21px;font-size: 14px; line-height: 21px;">
+                    <b>Compatible Devices:</b>
+                    Please refer to this
+                    <a href="{{ats_url}}" style="color: #1565C0; text-decoration: none;" target="_blank">information about compatible devices</a>.
+                </p>';
+        $root = DOMinator::read($html);
+        $this->assertEquals($html, $root->toHtml());
     }
 }
