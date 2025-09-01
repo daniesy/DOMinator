@@ -62,6 +62,11 @@ class Node
         'button'
     ];
 
+    // HTML void elements (never have closing tags)
+    private static array $voidElements = [
+        'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'
+    ];
+
     public NodeList $children;
     public ?Node $parent = null;
     public string $doctype = '';
@@ -159,6 +164,10 @@ class Node
         $attr = '';
         foreach ($this->attributes as $k => $v) {
             $attr .= ' ' . $k . '="' . str_replace('&#039;', '&apos;', htmlspecialchars($v, ENT_QUOTES | ENT_HTML5)) . '"';
+        }
+        // Emit void element without closing tag
+        if ($this->tag && in_array($this->tag, self::$voidElements, true)) {
+            return $indent . "<{$this->tag}{$attr}>"; // no children or closing tag
         }
         $html .= $indent . "<{$this->tag}{$attr}>";
         if ($this->children->length) {

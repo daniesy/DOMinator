@@ -837,4 +837,11 @@ class DOMinatorTest extends TestCase
         $root = DOMinator::read($html);
         $this->assertEquals($html, $root->toHtml());
     }
+
+    public function testNewLine()
+    {
+        $html = "<br>";
+        $root = DOMinator::read($html);
+        $this->assertEquals($html, $root->toHtml());
+    }
 }
