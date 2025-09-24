@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="421cff60-85d1-4900-9d16-7e7ef27c9a34" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/DOMinator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DOMinator.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DOMinator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DOMinator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Nodes/Node.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/Node.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/DOMinatorTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/DOMinatorTest.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -22,7 +26,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP">
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP Herd">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/composer" />
       <path value="$PROJECT_DIR$/vendor/nikic/php-parser" />
@@ -61,70 +65,75 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Composer Script.test.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;PHPUnit.DOMinatorTest.executor&quot;: &quot;Run&quot;,
-    &quot;PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemove.executor&quot;: &quot;Run&quot;,
-    &quot;PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContent.executor&quot;: &quot;Run&quot;,
-    &quot;PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContentSecond.executor&quot;: &quot;Run&quot;,
-    &quot;PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithoutContentSecond.executor&quot;: &quot;Run&quot;,
-    &quot;PHPUnit.DOMinatorTest.testGetAllTextNodesAndModify.executor&quot;: &quot;Run&quot;,
-    &quot;PHPUnit.DOMinatorTest.testNBSP.executor&quot;: &quot;Run&quot;,
-    &quot;PHPUnit.DOMinatorTest.testTextNodeIsAttributeError.executor&quot;: &quot;Run&quot;,
-    &quot;PHPUnit.DOMinatorTest.testToHtmlPrettyPrintSecond.executor&quot;: &quot;Run&quot;,
-    &quot;PHPUnit.QueryTest.testQuerySelectorAllAttribute.executor&quot;: &quot;Debug&quot;,
-    &quot;PHPUnit.ScriptStyleNodeTest.testParseScriptAndStyle.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Composer Script.test.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "PHPUnit.DOMinatorTest.executor": "Run",
+    "PHPUnit.DOMinatorTest.testCustomHtml.executor": "Run",
+    "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemove.executor": "Run",
+    "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContent.executor": "Run",
+    "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContentSecond.executor": "Run",
+    "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithoutContentSecond.executor": "Run",
+    "PHPUnit.DOMinatorTest.testGetAllTextNodesAndModify.executor": "Run",
+    "PHPUnit.DOMinatorTest.testNBSP.executor": "Run",
+    "PHPUnit.DOMinatorTest.testNewLine.executor": "Run",
+    "PHPUnit.DOMinatorTest.testQuotes.executor": "Run",
+    "PHPUnit.DOMinatorTest.testSimpleHtml.executor": "Run",
+    "PHPUnit.DOMinatorTest.testTextNodeIsAttributeError.executor": "Run",
+    "PHPUnit.DOMinatorTest.testToHtmlPrettyPrintSecond.executor": "Run",
+    "PHPUnit.QueryTest.testQuerySelectorAllAttribute.executor": "Debug",
+    "PHPUnit.ScriptStyleNodeTest.testParseScriptAndStyle.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager" selected="PHPUnit.DOMinatorTest.testCustomHtml">
-    <configuration name="DOMinatorTest" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
-      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" scope="Class" />
+}]]></component>
+  <component name="RunManager" selected="PHPUnit.DOMinatorTest.testAdvancedQuotes">
+    <configuration name="DOMinatorTest.testAdvancedQuotes" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testAdvancedQuotes" scope="Method" />
       <method v="2" />
     </configuration>
     <configuration name="DOMinatorTest.testCustomHtml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
       <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testCustomHtml" scope="Method" />
       <method v="2" />
     </configuration>
-    <configuration name="DOMinatorTest.testGetAllCommentNodesAndRemove" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
-      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testGetAllCommentNodesAndRemove" scope="Method" />
+    <configuration name="DOMinatorTest.testNewLine" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testNewLine" scope="Method" />
+      <method v="2" />
+    </configuration>
+    <configuration name="DOMinatorTest.testQuotes" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testQuotes" scope="Method" />
       <method v="2" />
     </configuration>
     <configuration name="DOMinatorTest.testSimpleHtml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
       <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testSimpleHtml" scope="Method" />
       <method v="2" />
     </configuration>
-    <configuration name="DOMinatorTest.testTextNodeIsAttributeError" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
-      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testTextNodeIsAttributeError" scope="Method" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="PHPUnit.DOMinatorTest.testAdvancedQuotes" />
+        <item itemvalue="PHPUnit.DOMinatorTest.testQuotes" />
+        <item itemvalue="PHPUnit.DOMinatorTest.testNewLine" />
         <item itemvalue="PHPUnit.DOMinatorTest.testCustomHtml" />
         <item itemvalue="PHPUnit.DOMinatorTest.testSimpleHtml" />
-        <item itemvalue="PHPUnit.DOMinatorTest.testTextNodeIsAttributeError" />
-        <item itemvalue="PHPUnit.DOMinatorTest" />
-        <item itemvalue="PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemove" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-PS-251.25410.148" />
-        <option value="bundled-php-predefined-a98d8de5180a-c5828cf854d9-com.jetbrains.php.sharedIndexes-PS-251.25410.148" />
+        <option value="bundled-js-predefined-d6986cc7102b-bcbf228cf9b6-JavaScript-PS-253.17525.99" />
+        <option value="bundled-php-predefined-a98d8de5180a-8fc3269dba72-com.jetbrains.php.sharedIndexes-PS-253.17525.99" />
       </set>
     </attachedChunks>
   </component>
@@ -144,6 +153,9 @@
       <workItem from="1747679602463" duration="454000" />
       <workItem from="1747777918887" duration="1753000" />
       <workItem from="1747781990713" duration="1744000" />
+      <workItem from="1756680030726" duration="239000" />
+      <workItem from="1756764330443" duration="423000" />
+      <workItem from="1758731192766" duration="381000" />
     </task>
     <servers />
   </component>
@@ -155,8 +167,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/tests/DOMinatorTest.php</url>
-          <line>721</line>
+          <line>725</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/tests/DOMinatorTest.php</url>
+          <line>843</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

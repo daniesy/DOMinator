@@ -198,7 +198,13 @@ class DOMinator {
             foreach ($m as $a) {
                 $name = $a[1];
                 if (isset($a[2]) && $a[2] !== '') {
-                    $val = html_entity_decode(trim($a[2], "'\""), ENT_QUOTES | ENT_HTML5);
+                    $val = $a[2];
+                    // Only trim the outermost matching quotes
+                    if ((str_starts_with($val, '"') && str_ends_with($val, '"')) ||
+                        (str_starts_with($val, "'") && str_ends_with($val, "'"))) {
+                        $val = substr($val, 1, -1);
+                    }
+                    $val = html_entity_decode($val, ENT_QUOTES | ENT_HTML5);
                 } else {
                     $val = '';
                 }

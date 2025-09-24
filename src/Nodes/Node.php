@@ -163,7 +163,9 @@ class Node
         }
         $attr = '';
         foreach ($this->attributes as $k => $v) {
-            $attr .= ' ' . $k . '="' . str_replace('&#039;', '&apos;', htmlspecialchars($v, ENT_QUOTES | ENT_HTML5)) . '"';
+            // When using double quotes for attributes, we only need to escape double quotes and HTML special chars
+            // Single quotes don't need escaping inside double-quoted attributes
+            $attr .= ' ' . $k . '="' . htmlspecialchars($v, ENT_COMPAT | ENT_HTML5) . '"';
         }
         // Emit void element without closing tag
         if ($this->tag && in_array($this->tag, self::$voidElements, true)) {

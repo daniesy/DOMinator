@@ -844,4 +844,18 @@ class DOMinatorTest extends TestCase
         $root = DOMinator::read($html);
         $this->assertEquals($html, $root->toHtml());
     }
+
+    public function testQuotes()
+    {
+        $html = "<div :class=\"'test'\"></div>";
+        $root = DOMinator::read($html);
+        $this->assertEquals($html, $root->toHtml());
+    }
+
+    public function testAdvancedQuotes()
+    {
+        $html = "<h1 class=\"text-4xl font-bold text-center tracking-wider bg-clip-text text-transparent bg-linear-to-r\" :class=\"{ 'from-green-500 to-teal-800': goodScore, 'from-amber-500 to-yellow-800': averageScore, 'from-rose-500 to-red-800': badScore}\" x-html=\"outro.title\"></h1>";
+        $root = DOMinator::read($html);
+        $this->assertEquals($html, $root->toHtml());
+    }
 }
