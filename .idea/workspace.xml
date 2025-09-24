@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="421cff60-85d1-4900-9d16-7e7ef27c9a34" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/DOMinator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DOMinator.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DOMinator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DOMinator.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/Node.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/Node.php" afterDir="false" />
@@ -70,7 +68,9 @@
     "Composer Script.test.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "PHPUnit.DOMinatorTest.executor": "Run",
+    "PHPUnit.DOMinatorTest.testAdvancedQuotes.executor": "Run",
     "PHPUnit.DOMinatorTest.testCustomHtml.executor": "Run",
+    "PHPUnit.DOMinatorTest.testDoubleQuotes.executor": "Run",
     "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemove.executor": "Run",
     "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContent.executor": "Run",
     "PHPUnit.DOMinatorTest.testGetAllCommentNodesAndRemoveWithContentSecond.executor": "Run",
@@ -98,13 +98,17 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="PHPUnit.DOMinatorTest.testAdvancedQuotes">
+  <component name="RunManager" selected="PHPUnit.DOMinatorTest.testDoubleQuotes">
     <configuration name="DOMinatorTest.testAdvancedQuotes" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
       <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testAdvancedQuotes" scope="Method" />
       <method v="2" />
     </configuration>
     <configuration name="DOMinatorTest.testCustomHtml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
       <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testCustomHtml" scope="Method" />
+      <method v="2" />
+    </configuration>
+    <configuration name="DOMinatorTest.testDoubleQuotes" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
+      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testDoubleQuotes" scope="Method" />
       <method v="2" />
     </configuration>
     <configuration name="DOMinatorTest.testNewLine" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
@@ -115,17 +119,13 @@
       <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testQuotes" scope="Method" />
       <method v="2" />
     </configuration>
-    <configuration name="DOMinatorTest.testSimpleHtml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" temporary="true">
-      <TestRunner class="DOMinatorTest" file="$PROJECT_DIR$/tests/DOMinatorTest.php" method="testSimpleHtml" scope="Method" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="PHPUnit.DOMinatorTest.testAdvancedQuotes" />
+        <item itemvalue="PHPUnit.DOMinatorTest.testDoubleQuotes" />
         <item itemvalue="PHPUnit.DOMinatorTest.testQuotes" />
+        <item itemvalue="PHPUnit.DOMinatorTest.testAdvancedQuotes" />
         <item itemvalue="PHPUnit.DOMinatorTest.testNewLine" />
         <item itemvalue="PHPUnit.DOMinatorTest.testCustomHtml" />
-        <item itemvalue="PHPUnit.DOMinatorTest.testSimpleHtml" />
       </list>
     </recent_temporary>
   </component>
@@ -155,7 +155,8 @@
       <workItem from="1747781990713" duration="1744000" />
       <workItem from="1756680030726" duration="239000" />
       <workItem from="1756764330443" duration="423000" />
-      <workItem from="1758731192766" duration="381000" />
+      <workItem from="1758731192766" duration="503000" />
+      <workItem from="1758731838827" duration="851000" />
     </task>
     <servers />
   </component>

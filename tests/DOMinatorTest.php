@@ -858,4 +858,16 @@ class DOMinatorTest extends TestCase
         $root = DOMinator::read($html);
         $this->assertEquals($html, $root->toHtml());
     }
+
+    public function testDoubleQuotes()
+    {
+        $html = <<<'HTML'
+<dotlottie-wc class="lottie max-w-96 w-full mx-auto" id="incorrectLottie" loop autoplay data='{"nm":"cancel icon2","ddd":0,"h":1500,"w":1500,"meta":{"g":"LottieFiles AE 3.5.7"},"layers":[{"ty":4,"nm":"Shape Layer 9","sr":1,"st":0,"op":143.999987536364,"ip":0,"hd":false,"ddd":0,"bm":0,"hasMask":false,"td":1,"ao":0,"ks":{"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6},"sk":{"a":0,"k":0},"p":{"a":0,"k":[750,750,0],"ix":2},"r":{"a":0,"k":0,"ix":10},"sa":{"a":0,"k":0},"o":{"a":0,"k":100,"ix":11}},"ef":[],"shapes":[{"ty":"gr","bm":0,"hd":false,"mn":"ADBE Vector Group"'></dotlottie-wc>
+HTML;
+
+        $root = DOMinator::read($html);
+        // Boolean attributes are output with ="" and single-quoted JSON data is preserved
+        $this->assertEquals($html, $root->toHtml());
+
+    }
 }

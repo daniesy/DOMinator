@@ -49,14 +49,16 @@ class DOMinator {
             // Script/style raw content
             // Handle script and style nodes specially to preserve their content
             elseif (preg_match('/^<(script)([^>]*)>([\s\S]*?)<\/script>/i', $substr, $m)) {
-                $attrs = self::parseAttributes($m[2]);
+                [$attrs, $booleanAttrs] = self::parseAttributes($m[2]);
                 $node = new ScriptNode($attrs, $m[3]);
+                $node->booleanAttributes = $booleanAttrs;
                 end($stack)->appendChild($node);
                 $offset += strlen($m[0]);
             }
             elseif (preg_match('/^<(style)([^>]*)>([\s\S]*?)<\/style>/i', $substr, $m)) {
-                $attrs = self::parseAttributes($m[2]);
+                [$attrs, $booleanAttrs] = self::parseAttributes($m[2]);
                 $node = new StyleNode($attrs, $m[3]);
+                $node->booleanAttributes = $booleanAttrs;
                 end($stack)->appendChild($node);
                 $offset += strlen($m[0]);
             }
@@ -97,7 +99,7 @@ class DOMinator {
                     if (preg_match('/^<([@a-zA-Z0-9_:.-]+)(.*?)(\/)?\s*>$/s', rtrim($tagChunk, '>') . '>', $m)) {
                         $tag = strtolower($m[1]);
                         $attrStr = $m[2];
-                        $attrs = self::parseAttributes($attrStr);
+                        [$attrs, $booleanAttrs] = self::parseAttributes($attrStr);
                         $namespace = '';
                         if (strpos($tag, ':') !== false) {
                             [$namespace, $tag] = explode(':', $tag, 2);
@@ -110,6 +112,7 @@ class DOMinator {
                             }
                         }
                         $node = new Node($tag, $attrs, false, '', false, false, $namespace);
+                        $node->booleanAttributes = $booleanAttrs;
                         end($stack)->appendChild($node);
                         $offset += strlen($tagChunk);
                         if (!$isVoid) {
@@ -174,8 +177,9 @@ class DOMinator {
             $tag = $m[1];
             $attrStr = $m[2];
             $inner = $m[3];
-            $attrs = self::parseAttributes($attrStr);
+            [$attrs, $booleanAttrs] = self::parseAttributes($attrStr);
             $node = new Node($tag, $attrs);
+            $node->booleanAttributes = $booleanAttrs;
             $childrenRoot = self::read($inner);
             foreach ($childrenRoot->children as $child) {
                 $node->appendChild($child);
@@ -187,30 +191,98 @@ class DOMinator {
 
     /**
      * Parse HTML attributes from a string
-     * 
+     *
      * @param string $str The attribute string to parse
-     * @return array An associative array of attribute name => value pairs
+     * @return array [attributes array, boolean attributes array]
      */
     private static function parseAttributes(string $str): array {
         $attrs = [];
-        // Match key="value", key='value', key=value, or key (boolean attribute)
-        if (preg_match_all('/([@a-zA-Z0-9_\-:.]+)(?:\s*=\s*("[^"]*"|\'[^"]*\'|[^\s>]+))?/', $str, $m, PREG_SET_ORDER)) {
-            foreach ($m as $a) {
-                $name = $a[1];
-                if (isset($a[2]) && $a[2] !== '') {
-                    $val = $a[2];
-                    // Only trim the outermost matching quotes
-                    if ((str_starts_with($val, '"') && str_ends_with($val, '"')) ||
-                        (str_starts_with($val, "'") && str_ends_with($val, "'"))) {
-                        $val = substr($val, 1, -1);
-                    }
-                    $val = html_entity_decode($val, ENT_QUOTES | ENT_HTML5);
-                } else {
-                    $val = '';
+        $booleanAttrs = [];
+        $len = strlen($str);
+        $i = 0;
+
+        while ($i < $len) {
+            // Skip whitespace
+            while ($i < $len && ctype_space($str[$i])) {
+                $i++;
+            }
+
+            if ($i >= $len) break;
+
+            // Parse attribute name
+            $nameStart = $i;
+            while ($i < $len && preg_match('/[@a-zA-Z0-9_\-:.]/', $str[$i])) {
+                $i++;
+            }
+
+            if ($i <= $nameStart) {
+                $i++;
+                continue;
+            }
+
+            $name = substr($str, $nameStart, $i - $nameStart);
+
+            // Skip whitespace after name
+            while ($i < $len && ctype_space($str[$i])) {
+                $i++;
+            }
+
+            // Check for equals sign
+            if ($i < $len && $str[$i] === '=') {
+                $i++;
+
+                // Skip whitespace after =
+                while ($i < $len && ctype_space($str[$i])) {
+                    $i++;
                 }
-                $attrs[$name] = $val;
+
+                // Parse value
+                if ($i < $len) {
+                    if ($str[$i] === '"') {
+                        // Double-quoted value
+                        $i++;
+                        $valueStart = $i;
+                        while ($i < $len && $str[$i] !== '"') {
+                            if ($str[$i] === '\\' && $i + 1 < $len) {
+                                $i += 2;
+                            } else {
+                                $i++;
+                            }
+                        }
+                        $value = substr($str, $valueStart, $i - $valueStart);
+                        if ($i < $len) $i++; // Skip closing quote
+                    } elseif ($str[$i] === "'") {
+                        // Single-quoted value
+                        $i++;
+                        $valueStart = $i;
+                        while ($i < $len && $str[$i] !== "'") {
+                            if ($str[$i] === '\\' && $i + 1 < $len) {
+                                $i += 2;
+                            } else {
+                                $i++;
+                            }
+                        }
+                        $value = substr($str, $valueStart, $i - $valueStart);
+                        if ($i < $len) $i++; // Skip closing quote
+                    } else {
+                        // Unquoted value
+                        $valueStart = $i;
+                        while ($i < $len && !ctype_space($str[$i]) && $str[$i] !== '>') {
+                            $i++;
+                        }
+                        $value = substr($str, $valueStart, $i - $valueStart);
+                    }
+                    $attrs[$name] = html_entity_decode($value, ENT_QUOTES | ENT_HTML5);
+                } else {
+                    $attrs[$name] = '';
+                }
+            } else {
+                // Boolean attribute (no value)
+                $attrs[$name] = '';
+                $booleanAttrs[] = $name;
             }
         }
-        return $attrs;
+
+        return [$attrs, $booleanAttrs];
     }
 }

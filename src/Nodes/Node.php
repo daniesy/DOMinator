@@ -71,6 +71,7 @@ class Node
     public ?Node $parent = null;
     public string $doctype = '';
     public string $xmlDeclaration = '';
+    public array $booleanAttributes = []; // Track which attributes are boolean (no value)
 
     public function __construct(
         public string $tag = '',
@@ -163,9 +164,17 @@ class Node
         }
         $attr = '';
         foreach ($this->attributes as $k => $v) {
-            // When using double quotes for attributes, we only need to escape double quotes and HTML special chars
-            // Single quotes don't need escaping inside double-quoted attributes
-            $attr .= ' ' . $k . '="' . htmlspecialchars($v, ENT_COMPAT | ENT_HTML5) . '"';
+            // Check if this is a boolean attribute (no value in original HTML)
+            if (in_array($k, $this->booleanAttributes, true)) {
+                // Boolean attribute - output without value
+                $attr .= ' ' . $k;
+            } elseif (str_contains($v, '"') && !str_contains($v, "'")) {
+                // Has double quotes but no single quotes - use single quotes
+                $attr .= ' ' . $k . "='" . $v . "'";
+            } else {
+                // Default to double quotes (works for most cases including single quotes inside)
+                $attr .= ' ' . $k . '="' . htmlspecialchars($v, ENT_COMPAT | ENT_HTML5) . '"';
+            }
         }
         // Emit void element without closing tag
         if ($this->tag && in_array($this->tag, self::$voidElements, true)) {
